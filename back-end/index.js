@@ -1,8 +1,8 @@
 const express = require('express')
 const morgan = require('morgan')
 const bodyParser = require('body-parser');
-const routesHandler = require('./routes/handler.js');
-const db = require('./db.js');
+const routesHandler = require('./src/routes/handler.js');
+const db = require('./src/routes/db.js');
 
 data = db.query(
   'SELECT * FROM role'

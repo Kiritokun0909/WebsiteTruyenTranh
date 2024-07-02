@@ -8,7 +8,7 @@ router.get('/', (req, res) => {
   )
 });
 
-router.get('/tweets', (req, res) => {
+router.get('/test-api', (req, res) => {
     const str = [
         {
             "name": "Codr Kai",
