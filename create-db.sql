@@ -1,125 +1,97 @@
-CREATE DATABASE IF NOT EXISTS ComicsDB;
-USE ComicsDB;
+CREATE DATABASE IF NOT EXISTS mangadb;
+USE mangadb;
 
--- Create Role table
 CREATE TABLE Role (
     RoleID INT AUTO_INCREMENT PRIMARY KEY,
-    RoleName VARCHAR(25) NOT NULL
+    RoleName VARCHAR(255) NOT NULL
 );
 
--- Create Account table
 CREATE TABLE Account (
     AccountID INT AUTO_INCREMENT PRIMARY KEY,
-    Email VARCHAR(100) NOT NULL UNIQUE,
-    Phone VARCHAR(20) NOT NULL UNIQUE,
+    Username VARCHAR(255) NOT NULL UNIQUE,
+    Email VARCHAR(255) NOT NULL UNIQUE,
     Password VARCHAR(255) NOT NULL,
     RoleID INT,
     FOREIGN KEY (RoleID) REFERENCES Role(RoleID)
 );
 
--- Create UserDetail table
-CREATE TABLE UserDetail (
-    UserID INT AUTO_INCREMENT PRIMARY KEY,
-    FirstName VARCHAR(50) NOT NULL,
-    LastName VARCHAR(50) NOT NULL,
-    Gender ENUM('Male', 'Female', 'Other') NOT NULL,
-    Address VARCHAR(255),
+CREATE TABLE Genre (
+    GenreID INT AUTO_INCREMENT PRIMARY KEY,
+    GenreName VARCHAR(255) NOT NULL UNIQUE
+);
+
+CREATE TABLE Manga (
+    MangaID INT AUTO_INCREMENT PRIMARY KEY,
+    StoryName VARCHAR(255) NOT NULL,
+    AuthorName VARCHAR(255) NOT NULL,
+    CoverImageUrl VARCHAR(255),
+    PublishedDate DATE,
+    Country VARCHAR(255),
+    Description TEXT,
+    AgeLimit INT,
+    Status VARCHAR(255),
+    NumViews INT DEFAULT 0,
     AccountID INT,
     FOREIGN KEY (AccountID) REFERENCES Account(AccountID)
 );
 
--- Create Genre table
-CREATE TABLE Genre (
-    GenreID INT AUTO_INCREMENT PRIMARY KEY,
-    GenreName VARCHAR(50) NOT NULL UNIQUE
-);
-
--- Create Story table
-CREATE TABLE Story (
-    StoryID INT AUTO_INCREMENT PRIMARY KEY,
-    StoryName VARCHAR(100) NOT NULL,
-    AuthorName VARCHAR(100),
-    Image VARCHAR(255),
-    PublishedDate DATE,
-    Country VARCHAR(100),
-    TypeStory ENUM('Manga', 'Novel') NOT NULL,
-    Description TEXT,
-    AgeLimit INT,
-    Status ENUM('Ongoing', 'Completed', 'Stop') NOT NULL,
-    UserID INT,
-    FOREIGN KEY (UserID) REFERENCES UserDetail(UserID)
-);
-
--- Create StoryGenre table
-CREATE TABLE StoryGenre (
+CREATE TABLE MangaGenre (
     GenreID INT,
-    StoryID INT,
-    PRIMARY KEY (GenreID, StoryID),
+    MangaID INT,
+    PRIMARY KEY (GenreID, MangaID),
     FOREIGN KEY (GenreID) REFERENCES Genre(GenreID),
-    FOREIGN KEY (StoryID) REFERENCES Story(StoryID)
+    FOREIGN KEY (MangaID) REFERENCES Manga(MangaID)
 );
 
--- Create Chapter table
 CREATE TABLE Chapter (
     ChapterID INT AUTO_INCREMENT PRIMARY KEY,
-    ChapterName VARCHAR(100) NOT NULL,
+    ChapterName VARCHAR(255) NOT NULL,
     PublishedDate DATE,
-    StoryID INT,
-    FOREIGN KEY (StoryID) REFERENCES Story(StoryID)
+    MangaID INT,
+    FOREIGN KEY (MangaID) REFERENCES Manga(MangaID)
 );
 
--- Create Manga table
-CREATE TABLE Manga (
+CREATE TABLE ChapterImage (
     ChapterID INT,
     OrderNumber INT,
-    Image VARCHAR(255),
+    ImageUrl VARCHAR(255),
     PRIMARY KEY (ChapterID, OrderNumber),
     FOREIGN KEY (ChapterID) REFERENCES Chapter(ChapterID)
 );
 
--- Create Novel table
-CREATE TABLE Novel (
-    ChapterID INT PRIMARY KEY,
-    Context TEXT,
-    FOREIGN KEY (ChapterID) REFERENCES Chapter(ChapterID)
-);
-
--- Create Like table
 CREATE TABLE `Like` (
-    UserID INT,
-    StoryID INT,
-    PRIMARY KEY (UserID, StoryID),
-    FOREIGN KEY (UserID) REFERENCES UserDetail(UserID),
-    FOREIGN KEY (StoryID) REFERENCES Story(StoryID)
+    AccountID INT,
+    MangaID INT,
+    PRIMARY KEY (AccountID, MangaID),
+    FOREIGN KEY (AccountID) REFERENCES Account(AccountID),
+    FOREIGN KEY (MangaID) REFERENCES Manga(MangaID)
 );
 
--- Create Follow table
 CREATE TABLE Follow (
-    UserID INT,
-    StoryID INT,
-    PRIMARY KEY (UserID, StoryID),
-    FOREIGN KEY (UserID) REFERENCES UserDetail(UserID),
-    FOREIGN KEY (StoryID) REFERENCES Story(StoryID)
+    AccountID INT,
+    MangaID INT,
+    IsChecked BOOLEAN,
+    PRIMARY KEY (AccountID, MangaID),
+    FOREIGN KEY (AccountID) REFERENCES Account(AccountID),
+    FOREIGN KEY (MangaID) REFERENCES Manga(MangaID)
 );
 
--- Create CommentStory table
-CREATE TABLE CommentStory (
-    UserID INT,
-    StoryID INT,
-    CommentDate DATETIME,
-    Context TEXT,
-    PRIMARY KEY (UserID, StoryID, CommentDate),
-    FOREIGN KEY (UserID) REFERENCES UserDetail(UserID),
-    FOREIGN KEY (StoryID) REFERENCES Story(StoryID)
+CREATE TABLE CommentManga (
+	AccountID INT,
+	MangaID INT,
+	CommentDate DATETIME,
+	Context TEXT,
+	PRIMARY KEY (AccountID, MangaID, CommentDate),
+	FOREIGN KEY (AccountID) REFERENCES Account(AccountID),
+	FOREIGN KEY (MangaID) REFERENCES Manga(MangaID)
 );
 
--- Create CommentChapter table
 CREATE TABLE CommentChapter (
-    UserID INT,
+    AccountID INT,
     ChapterID INT,
     CommentDate DATETIME,
     Context TEXT,
-    PRIMARY KEY (UserID, ChapterID, CommentDate),
-    FOREIGN KEY (UserID) REFERENCES UserDetail(UserID),
+    PRIMARY KEY (AccountID, ChapterID, CommentDate),
+    FOREIGN KEY (AccountID) REFERENCES Account(AccountID),
     FOREIGN KEY (ChapterID) REFERENCES Chapter(ChapterID)
 );

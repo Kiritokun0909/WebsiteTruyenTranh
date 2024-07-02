@@ -4,7 +4,7 @@ const conn = mysql.createPool({
   host: 'localhost',
   user: 'root',
   password: '123456',
-  database: 'comicsdb',
+  database: 'mangadb',
 });
 
 module.exports = conn
