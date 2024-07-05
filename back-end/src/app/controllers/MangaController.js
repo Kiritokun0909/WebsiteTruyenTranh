@@ -1,11 +1,11 @@
-class HomeController {
+class MangaController {
     
     // [GET] /home
     index(req, res) {
         res.send('<h1>Hello World!</h1>');
     }
 
-    // [GET] /home/details
+    // [GET] /
     showDetail(req, res) {
         const str = [
             {
@@ -27,11 +27,18 @@ class HomeController {
         res.end(JSON.stringify(str));
     }
 
-    showItem(req, res) {
-        res.send('OK');
+    getMangaInfo(req, res) {
+        const mangaId = req.params.id;
+        
+        res.send('Show manga id = ' + mangaId);
     }
 
-    
+    getMangaChapter(req, res) {
+        const mangaId = req.params.mangaId;
+        const chapterId = req.params.id;
+        
+        res.send('Manga ID = ' + mangaId + ', chapterId = ' + chapterId);
+    }
 }
 
-module.exports = new HomeController;
+module.exports = new MangaController;

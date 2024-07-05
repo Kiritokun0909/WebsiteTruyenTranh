@@ -1,3 +1,5 @@
+const accountService = require('../../services/AccountService.js'); // Adjust the path as needed
+
 class SiteController {
     
     // [GET] /
@@ -10,6 +12,12 @@ class SiteController {
         res.send('Privacy');
     }
 
+    // [GET] /role
+    async getAllRoles(req, res){
+        const data = await accountService.getListRole();
+        console.log(data);
+        res.json(data);
+    }
     
 }
 

@@ -3,8 +3,9 @@ const router = express.Router();
 
 const controller = require('../app/controllers/SiteController.js');
 
-
+router.use('/roles', controller.getAllRoles);
 router.use('/privacy', controller.privacy);
+router.use('/', controller.index);
 
 
 module.exports = router;
