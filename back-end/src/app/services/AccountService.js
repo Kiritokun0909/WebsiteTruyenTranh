@@ -1,4 +1,4 @@
-const db = require('../configs/DatabaseConfig.js');
+const db = require('../../configs/DatabaseConfig.js');
 
 module.exports.getListRole = async () => {
     try {

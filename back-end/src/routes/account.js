@@ -5,6 +5,7 @@ const controller = require('../app/controllers/AccountController.js');
 
 
 router.use('/register', controller.register);
+router.use('/login', controller.register);
 router.use('/', controller.index);
 
 

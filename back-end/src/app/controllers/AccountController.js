@@ -1,4 +1,5 @@
-const accountService = require('../../services/AccountService.js');
+const accountService = require('../services/AccountService.js');
+const HttpStatus = require('../../configs/HttpStatusCode.js');
 
 class AccountController {
 
@@ -10,13 +11,14 @@ class AccountController {
         res.send('login thành công');
     }
 
+    // [GET] /account/register
     async register(req, res) {
         const { username, email, password } = req.body;
         try {
             const result = await accountService.register(username, email, password);
-            res.status(201).json({ message: 'User registered successfully' });
+            res.status(HttpStatus.CREATED).json({ message: 'User registered successfully' });
         } catch (err) {
-            res.status(500).json({ message: 'Failed to register user' });
+            res.status(HttpStatus.INTERNAL_SERVER_ERROR).json({ message: 'Failed to register user' });
         }
     }
 

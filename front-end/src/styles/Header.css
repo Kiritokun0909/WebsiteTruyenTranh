@@ -1,0 +1,101 @@
+header {
+  width: 100%;
+  background-color: #f8f9fa;
+}
+  
+.top-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px 20px;
+  background-color: #343a40;
+  color: white;
+}
+
+.logo {
+  font-size: 24px;
+  font-weight: bold;
+  color: white; /* Set text color to white */
+}
+
+.logo a {
+  text-decoration: none; /* Remove underline from anchor tag */
+  color: inherit; /* Inherit color from parent .logo */
+}
+
+.search-bar {
+  flex: 1;
+  margin: 0 20px;
+}
+
+.search-bar input {
+  width: 100%;
+  padding: 8px;
+  border: 1px solid #ced4da;
+  border-radius: 4px;
+}
+
+.auth-buttons button {
+  margin-left: 10px;
+  padding: 8px 16px;
+  border: none;
+  border-radius: 4px;
+  background-color: #007bff;
+  color: white;
+  cursor: pointer;
+}
+
+.auth-buttons button:hover {
+  background-color: #0056b3;
+}
+
+.nav-bar {
+  background-color: #495057;
+}
+
+.nav-bar nav ul {
+  list-style: none;
+  display: flex;
+  justify-content: space-around;
+  padding: 10px 0;
+  margin: 0;
+}
+
+.nav-bar nav ul li a {
+  color: white;
+  text-decoration: none;
+  padding: 8px 16px;
+  border-radius: 4px;
+  position: relative;
+  transition: background-color 0.3s ease;
+}
+
+.nav-bar nav ul li a:hover,
+.nav-bar nav ul li:hover > a {
+  background-color: #343a40;
+}
+
+.sub-menu {
+  display: none;
+  position: absolute;
+  background-color: #343a40;
+  z-index: 1;
+  border-radius: 4px;
+  padding: 0 5px;
+}
+
+.sub-menu li {
+  text-align: center;
+}
+
+.sub-menu li a {
+  display: block;
+  padding: 10px 20px;
+  color: white;
+  text-decoration: none;
+  transition: background-color 0.3s ease;
+}
+
+.sub-menu li a:hover {
+  color: #cccccc;
+}

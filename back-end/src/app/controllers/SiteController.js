@@ -1,4 +1,4 @@
-const accountService = require('../../services/AccountService.js'); // Adjust the path as needed
+const accountService = require('../services/AccountService.js'); // Adjust the path as needed
 
 class SiteController {
     
@@ -19,6 +19,20 @@ class SiteController {
         res.json(data);
     }
     
+    // [GET] /role
+    getAllGenres(req, res){
+        // const data = await accountService.getListRole();
+        // console.log(data);
+        res.json({
+            "genres": [
+              { "id": 1, "name": "Action" },
+              { "id": 2, "name": "Adventure" },
+              { "id": 3, "name": "Fantasy" },
+              { "id": 4, "name": "Romance" },
+              { "id": 5, "name": "Sci-Fi" }
+            ]
+        });
+    }
 }
 
 module.exports = new SiteController;
