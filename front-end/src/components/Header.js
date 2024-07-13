@@ -1,4 +1,5 @@
 import React, {useEffect, useState, useRef } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
 import '../styles/Header.css';
 
 const Header = () => {
@@ -6,7 +7,7 @@ const Header = () => {
   const [genres, setGenres] = useState([]);
   const genresButtonRef = useRef(null);
   const subMenuRef = useRef(null);
-
+  const navigate = useNavigate();
 
   useEffect(() => {
     fetchGenres();
@@ -55,17 +56,21 @@ const Header = () => {
     setShowGenres(false);
   };
 
+  const handleLoginRegisterClick = () => {
+    navigate('/login');
+  };
+
   return (
     <header>
       <div className="top-header">
         <div className="logo">
-            <a href="/">Manga</a>
+            <Link to="/">Manga</Link>
         </div>
         <div className="search-bar">
           <input type="text" placeholder="Search..." />
         </div>
         <div className="auth-buttons">
-          <button>Login/Register</button>
+          <button onClick={handleLoginRegisterClick}>Login/Register</button>
         </div>
       </div>
 

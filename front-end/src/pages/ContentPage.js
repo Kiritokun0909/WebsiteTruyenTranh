@@ -4,7 +4,7 @@ import React from 'react';
 const Content = () => {
   return (
     <div className='Content'>
-      <h1>This is content</h1>
+      <h1>ContentPage</h1>
     </div>
   );
 };

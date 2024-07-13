@@ -14,6 +14,10 @@ footer {
   padding: 0 20px;
 }
 
+.footer-content a:hover {
+  color: #cccccc;
+}
+
 .social-links a {
   color: white;
   text-decoration: none;

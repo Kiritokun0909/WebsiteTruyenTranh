@@ -1,7 +1,10 @@
-import React, { useEffect, useState } from 'react';
+import React from 'react';
+import { Route, Routes } from 'react-router-dom';
 import Header from './components/Header';
 import Footer from './components/Footer';
-import Content from './components/Content';
+import Content from './pages/ContentPage';
+import Privacy from './pages/PrivacyPage';
+import Login from './pages/LoginPage';
 import "./styles/App.css";
 
 function App() {
@@ -10,7 +13,14 @@ function App() {
     <div className='App'>
       <Header />
 
-      <Content />
+      <div className='content'>
+        <Routes>
+          <Route path="/" element={<Content />} />
+          <Route path="/privacy" element={<Privacy />} />
+          <Route path="/login" element={<Login />} />
+          
+        </Routes>
+      </div>
 
       <Footer />
     </div>
