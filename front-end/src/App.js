@@ -2,9 +2,10 @@ import React from 'react';
 import { Route, Routes } from 'react-router-dom';
 import Header from './components/Header';
 import Footer from './components/Footer';
-import Content from './pages/ContentPage';
+import HomePage from './pages/HomePage';
 import Privacy from './pages/PrivacyPage';
-import Login from './pages/LoginPage';
+import LoginPage from './pages/LoginPage';
+import Manga from './pages/MangaPage';
 import "./styles/App.css";
 
 function App() {
@@ -15,10 +16,10 @@ function App() {
 
       <div className='content'>
         <Routes>
-          <Route path="/" element={<Content />} />
+          <Route path="/" element={<HomePage />} />
           <Route path="/privacy" element={<Privacy />} />
-          <Route path="/login" element={<Login />} />
-          
+          <Route path="/login" element={<LoginPage />} />
+          <Route path="/manga/:id" element={<Manga />} />
         </Routes>
       </div>
 

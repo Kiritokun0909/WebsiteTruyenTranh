@@ -2,7 +2,7 @@
 import React, { useState } from 'react';
 import '../styles/Login.css';
 
-const Login = () => {
+const LoginPage = () => {
     const [isLogin, setIsLogin] = useState(true);
 
     const toggleAuthMode = () => {
@@ -53,4 +53,4 @@ const Login = () => {
     );
 };
 
-export default Login;
+export default LoginPage;

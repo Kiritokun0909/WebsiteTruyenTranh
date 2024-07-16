@@ -7,8 +7,8 @@ const Footer = () => {
     <footer>
       <div className="footer-content">
         <div className="social-links">
-          <Link to="/privacy">Privacy</Link>
-          <Link to="https://www.facebook.com/">Facebook</Link>
+          <Link to="/privacy">Privacy</Link> | 
+          <Link to="https://www.facebook.com/">Facebook</Link> | 
           <Link to="https://discord.com/">Discord</Link>
         </div>
 

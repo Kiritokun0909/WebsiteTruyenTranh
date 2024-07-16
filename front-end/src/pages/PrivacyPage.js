@@ -2,14 +2,11 @@ import React from 'react';
 
 const Privacy = () => {
   return (
-    <privacy>
+    <div>
         <h1>Privacy Page</h1>
 
-        <p>
-      
-
-        </p>
-    </privacy>
+       
+    </div>
   );
 };
 

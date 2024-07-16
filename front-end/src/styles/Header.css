@@ -70,16 +70,19 @@ header {
   transition: background-color 0.3s ease;
 }
 
+
 .nav-bar nav ul li a:hover,
 .nav-bar nav ul li:hover > a {
   background-color: #343a40;
 }
 
 .sub-menu {
-  display: none;
+  display: flex;
+  flex-wrap: wrap;
   position: absolute;
   background-color: #343a40;
-  z-index: 1;
+  z-index: 1000;
+  width: 75%;
   border-radius: 4px;
   padding: 0 5px;
 }

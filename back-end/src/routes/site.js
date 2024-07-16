@@ -4,8 +4,13 @@ const router = express.Router();
 const controller = require('../app/controllers/SiteController.js');
 
 router.use('/roles', controller.getAllRoles);
-router.use('/genres', controller.getAllGenres);
-router.use('/privacy', controller.privacy);
+
+router.use('/genres', controller.getListGenre);
+router.use('/genre/:id/pageNumber=:pageNumber', controller.getListMangaByGenre);
+
+router.use('/mangas/pageNumber=:pageNumber', controller.getListManga);
+
+router.use('/manga/:id', controller.getManga);
 router.use('/', controller.index);
 
 

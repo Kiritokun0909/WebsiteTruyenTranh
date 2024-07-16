@@ -1,0 +1,87 @@
+.column-layout {
+  display: flex;
+}
+
+.column-item {
+  padding: 0 16px;
+  flex: 1;
+  text-align: center;
+}
+
+/* Default styles for sidebars */
+.sidebar-one,
+.sidebar-two {
+  display: block;
+  background-color: #ebebeb;
+}
+
+.main-column {
+  flex: 5;
+  background-color: #ebebeb;
+  padding: 14px 10px;
+  border-radius: 4px;
+}
+
+.main-column h1 {
+  margin: 0px 10px 10px 10px;
+}
+
+@media (max-width: 768px) {
+  .sidebar-one,
+  .sidebar-two {
+    display: none;
+  }
+
+  .main-column {
+    flex: 1;
+    width: 100%;
+  }
+}
+
+.manga-list {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  min-height: 60vh;
+}
+
+.manga-item {
+  width: 150px; /* Match the width of the cover image */
+  text-align: center;
+  margin: 8px 16px;
+}
+
+.manga-item img {
+  width: 150px;
+  margin-bottom: 2px;
+}
+
+.manga-item a {
+  text-decoration: none;
+  color: black;
+}
+
+.manga-cover {
+  width: 100%;
+  height: auto;
+  border-radius: 5px;
+}
+
+#manga-name {
+  font-size: 14px;
+  font-weight: 500;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: clip;
+}
+
+#chapter {
+  font-size: 12px;
+}
+
+.pagination {
+  margin-top: 12px;
+  justify-content: center;
+}
+
+@import "https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css";

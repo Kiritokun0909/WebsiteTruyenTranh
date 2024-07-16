@@ -1,0 +1,164 @@
+.column-layout {
+  display: flex;
+  padding: 12px 0px;
+  background-color: #ebebeb;
+}
+
+.column-item {
+  flex: 1;
+  text-align: center;
+}
+
+/* Default styles for sidebars */
+.sidebar-one,
+.sidebar-two {
+  display: block;
+}
+
+.main-column {
+  flex: 5;
+  background-color: white;
+  padding: 14px 10px;
+  border-radius: 4px;
+}
+
+.main-column h1 {
+  margin: 0px 10px 10px 10px;
+}
+
+@media (max-width: 768px) {
+  .sidebar-one,
+  .sidebar-two {
+    display: none;
+  }
+
+  .main-column {
+    flex: 1;
+    width: 100%;
+  }
+}
+
+.manga-detail-head {
+  display: flex;
+}
+
+.manga-cover {
+  width: 150px;
+  border-radius: 5px;
+  margin-bottom: 8px;
+  margin-left: 8px;
+}
+
+.manga-info {
+  padding: 0px 24px;
+}
+
+.list-info {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  margin-top: 10px;
+}
+
+.list-info p {
+  margin: 0;
+  padding: 0;
+  font-size: 16px;
+}
+
+.btn-like-follow button {
+  margin: 8px 4px;
+  border: none;
+  border-radius: 4px;
+  padding: 4px 24px;
+  font-size: medium;
+  transition: filter 0.3s ease; /* Add transition for smooth effect */
+}
+
+#btn-like {
+  background-color: #ff3860;
+  color: white
+}
+
+#btn-follow {
+  background-color: #bd10e0;
+  color: white
+}
+
+#btn-like:hover,
+#btn-follow:hover {
+  filter: brightness(85%); /* Adjust brightness for blur effect */
+}
+
+.manga-description{
+  text-align: left;
+  margin-bottom: 8px;
+}
+
+.manga-description p {
+  margin-bottom: 4px;
+  font-size: 16px;
+}
+.manga-description strong {
+  margin-right: 4px;
+}
+
+.manga-description a {
+  color: black;
+  text-decoration: none;
+  margin: 0px 4px;
+  border: none;
+  border-radius: 4px;
+  background-color: orange;
+  color: black;
+  padding: 2px 8px;
+  font-size: medium;
+  font-weight: 600;
+  flex-wrap: wrap;
+  margin: 4px 4px;
+}
+
+.manga-description a:hover {
+  filter: brightness(85%); /* Adjust brightness for blur effect */
+}
+
+.genre-list {
+  margin-top: 0px;
+  display: flex;
+  flex-wrap: wrap;
+}
+
+.description {
+  margin-top: 12px;
+}
+
+.header-title  {
+  margin-top: 12px;
+  text-align: left;
+  
+}
+
+.manga-chapter {
+  border: 2px solid;
+  border-radius: 4px;
+  padding: 16px;
+  max-height: 200px;
+  overflow: auto;
+  min-height: 100px;
+}
+
+.chapter-row {
+  display: flex;
+  justify-content: space-between;
+  border-bottom: 1px solid #eee;
+  margin-top: 2px;
+}
+
+.chapter-row a {
+  color: black;
+  text-decoration: none;
+}
+
+.chapter-row a:hover {
+  color: orange;
+}
