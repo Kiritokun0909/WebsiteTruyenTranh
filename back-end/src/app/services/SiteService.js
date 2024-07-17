@@ -3,7 +3,9 @@ const db = require('../../configs/DatabaseConfig.js');
 module.exports.getListGenre = async () => {
     try {
         const [rows] = await db.query('SELECT * FROM genre ORDER BY GenreName');
-        return rows;
+        return {
+            genres: rows
+        };
     } catch (err) {
         console.error('Failed to connect to the database\n', err);
         throw err;
@@ -41,6 +43,48 @@ module.exports.getListManga = async (pageNumber = 1, itemsPerPage = 5) => {
     }
 };
 
+
+module.exports.getListMangaByGenre = async (genreId=1, pageNumber = 1, itemsPerPage = 5) => {
+    try {
+        const [totalRows] = await db.query(
+            `SELECT COUNT(MangaID) as total 
+            FROM mangagenre 
+            WHERE genreid= ?;`
+            , [genreId]
+        );
+        const totalMangas = totalRows[0].total;
+
+        const totalPages = Math.ceil(totalMangas / itemsPerPage);
+        if (pageNumber > totalPages) {
+            return { 
+                pageNumber,
+                totalPages, 
+                mangas: []
+            };
+        }
+
+        const offset = (pageNumber - 1) * itemsPerPage;
+        const [rows] = await db.query(
+            `SELECT m.MangaID, m.CoverImageUrl, m.StoryName, m.NumChapter
+            FROM mangagenre mg
+                JOIN (SELECT MangaID, CoverImageUrl, StoryName, NumChapter FROM manga) as m ON mg.MangaID = m.MangaID
+            WHERE genreid = ?
+            LIMIT ? OFFSET ?;`,
+            [genreId, itemsPerPage, offset]
+        );
+
+        return {
+            pageNumber,
+            totalPages,
+            mangas: rows
+        };
+    } catch (err) {
+        console.error('Failed to connect to the database\n', err);
+        throw err;
+    }
+}
+
+
 const formatDate = (dateString) => {
     const date = new Date(dateString);
     const year = date.getFullYear();
@@ -49,13 +93,11 @@ const formatDate = (dateString) => {
     return `${year}-${month}-${day}`;
 };
 
-
-
-module.exports.getManga = async (id) => {
+module.exports.getManga = async (mangaId) => {
     try {
         const [mangaRow] = await db.query(
             'SELECT * FROM manga WHERE MangaID = ?', 
-            [id]
+            [mangaId]
         );
 
         const [genreRows] = await db.query(
@@ -63,7 +105,7 @@ module.exports.getManga = async (id) => {
             from mangagenre mg
 	            join genre g on mg.GenreID = g.GenreID
             where MangaId = ?;`, 
-            [id]
+            [mangaId]
         );
 
         const [chapterRows] = await db.query(
@@ -74,7 +116,7 @@ module.exports.getManga = async (id) => {
                 CAST(SUBSTRING_INDEX(chaptername, ' ', -1) AS DECIMAL) desc,
                 LENGTH(chaptername),
                 chaptername;`, 
-            [id]
+            [mangaId]
         );
 
         const formattedChapters = chapterRows.map(chapter => ({
@@ -86,6 +128,53 @@ module.exports.getManga = async (id) => {
             manga: mangaRow,
             genres: genreRows,
             chapters: formattedChapters
+        };
+    } catch (err) {
+        console.error('Failed to connect to the database\n', err);
+        throw err;
+    }
+};
+
+
+module.exports.getChapter = async (chapterId) => {
+    try {
+        const [chapterInfoRows] = await db.query(
+            `SELECT 
+                current.chapterid,
+                current.chaptername,
+                mangainfo.storyname,
+                prev.chapterid AS prev_chapterid,
+                next.chapterid AS next_chapterid,
+                current.mangaid
+            FROM chapter AS current
+            LEFT JOIN chapter AS prev 
+                ON prev.mangaid = current.mangaid 
+                AND prev.chapterid < current.chapterid
+            LEFT JOIN chapter AS next 
+                ON next.mangaid = current.mangaid 
+                AND next.chapterid > current.chapterid
+            JOIN manga as mangainfo
+	            ON current.mangaid = mangainfo.mangaid
+            WHERE current.chapterid = ?
+            ORDER BY prev.chapterid DESC, next.chapterid ASC
+            LIMIT 1;`, 
+            [chapterId]
+        );
+
+        const [chapterImageRows] = await db.query(
+            `select OrderNumber, ImageUrl 
+            from chapterimage where chapterid = ?
+            order by OrderNumber asc;`, 
+            [chapterId]
+        );
+
+        return {
+            mangaId: chapterInfoRows[0].mangaid,
+            mangaName: chapterInfoRows[0].storyname,
+            chapterName: chapterInfoRows[0].chaptername,
+            previousChapterId: chapterInfoRows[0].prev_chapterid,
+            nextChapterId: chapterInfoRows[0].next_chapterid,
+            chapter: chapterImageRows
         };
     } catch (err) {
         console.error('Failed to connect to the database\n', err);

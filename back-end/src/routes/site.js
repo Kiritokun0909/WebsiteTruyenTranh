@@ -6,11 +6,14 @@ const controller = require('../app/controllers/SiteController.js');
 router.use('/roles', controller.getAllRoles);
 
 router.use('/genres', controller.getListGenre);
-router.use('/genre/:id/pageNumber=:pageNumber', controller.getListMangaByGenre);
 
+router.use('/mangas/genreId=:genreId&pageNumber=:pageNumber', controller.getListMangaByGenre);
 router.use('/mangas/pageNumber=:pageNumber', controller.getListManga);
 
 router.use('/manga/:id', controller.getManga);
+
+router.use('/chapter/:chapterId', controller.getChapter);
+
 router.use('/', controller.index);
 
 

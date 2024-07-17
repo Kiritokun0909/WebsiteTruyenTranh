@@ -2,66 +2,68 @@ header {
   width: 100%;
   background-color: #f8f9fa;
 }
-  
+
 .top-header {
   display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 10px 20px;
+  justify-content: space-around;
+  padding: 12px 12px;
   background-color: #343a40;
   color: white;
 }
 
 .logo {
-  font-size: 24px;
-  font-weight: bold;
-  color: white; /* Set text color to white */
+  margin-right: 12px;
+  align-items: center;
 }
 
 .logo a {
-  text-decoration: none; /* Remove underline from anchor tag */
-  color: inherit; /* Inherit color from parent .logo */
+  text-decoration: none;
+  font-size: 24px;
+  font-weight: bold;
+  color: white;
 }
 
 .search-bar {
+  display: flex;
   flex: 1;
-  margin: 0 20px;
 }
 
 .search-bar input {
   width: 100%;
-  padding: 8px;
+  padding: 0px 12px;
   border: 1px solid #ced4da;
   border-radius: 4px;
 }
 
 .auth-buttons button {
-  margin-left: 10px;
-  padding: 8px 16px;
+  margin-left: 12px;
+  padding: 8px 12px;
   border: none;
   border-radius: 4px;
   background-color: #007bff;
   color: white;
   cursor: pointer;
+  font-size: 16px;
+  font-weight: 500;
 }
 
 .auth-buttons button:hover {
-  background-color: #0056b3;
+  filter: brightness(80%);
 }
 
 .nav-bar {
   background-color: #495057;
 }
 
-.nav-bar nav ul {
+.nav-bar ul {
   list-style: none;
   display: flex;
   justify-content: space-around;
-  padding: 10px 0;
-  margin: 0;
+  padding: 8px 0px;
+  margin: auto;
 }
 
-.nav-bar nav ul li a {
+.nav-bar ul li a {
   color: white;
   text-decoration: none;
   padding: 8px 16px;
@@ -70,9 +72,8 @@ header {
   transition: background-color 0.3s ease;
 }
 
-
-.nav-bar nav ul li a:hover,
-.nav-bar nav ul li:hover > a {
+.nav-bar ul li a:hover,
+.nav-bar ul li:hover > a {
   background-color: #343a40;
 }
 
@@ -82,9 +83,14 @@ header {
   position: absolute;
   background-color: #343a40;
   z-index: 1000;
-  width: 75%;
+  width: 30%;
   border-radius: 4px;
-  padding: 0 5px;
+}
+
+@media (max-width: 768px) {
+  .sub-menu {
+    width: 80%;
+  }
 }
 
 .sub-menu li {
@@ -100,5 +106,5 @@ header {
 }
 
 .sub-menu li a:hover {
-  color: #cccccc;
+  color: orange;
 }

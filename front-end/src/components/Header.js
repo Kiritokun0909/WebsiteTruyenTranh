@@ -1,6 +1,7 @@
 import React, { useEffect, useState, useRef } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import "../styles/Header.css";
+import { fetchGenres } from "../api/SiteService";
 
 const Header = () => {
   const [showGenres, setShowGenres] = useState(false);
@@ -10,21 +11,7 @@ const Header = () => {
   const navigate = useNavigate();
 
   useEffect(() => {
-    fetchGenres();
-  }, []);
-
-  useEffect(() => {
-    // Add event listener to handle clicks outside the genres button and drop-down
-    const handleOutsideClick = (event) => {
-      if (
-        genresButtonRef.current &&
-        !genresButtonRef.current.contains(event.target) &&
-        subMenuRef.current &&
-        !subMenuRef.current.contains(event.target)
-      ) {
-        setShowGenres(false);
-      }
-    };
+    getGenres();
 
     document.addEventListener("mousedown", handleOutsideClick);
 
@@ -33,18 +20,23 @@ const Header = () => {
     };
   }, []);
 
-  const fetchGenres = async () => {
+  const getGenres = async () => {
     try {
-      // Replace with actual API endpoint
-      const response = await fetch("/genres");
-      if (!response.ok) {
-        throw new Error("Failed to fetch genres");
-      }
-      const data = await response.json();
-      setGenres(data.genres); // Assuming API response contains an array of genres
+      const data = await fetchGenres();
+      setGenres(data.genres);
     } catch (error) {
-      console.error("Error fetching genres:", error);
-      // Handle error (e.g., show error message, retry mechanism)
+      console.error("Error get list genre:", error);
+    }
+  };
+
+  const handleOutsideClick = (event) => {
+    if (
+      genresButtonRef.current &&
+      !genresButtonRef.current.contains(event.target) &&
+      subMenuRef.current &&
+      !subMenuRef.current.contains(event.target)
+    ) {
+      setShowGenres(false);
     }
   };
 
@@ -61,22 +53,21 @@ const Header = () => {
   };
 
   return (
-    <header>
+    <div>
       <div className="top-header">
         <div className="logo">
           <Link to="/">Manga Reader</Link>
         </div>
         <div className="search-bar">
           <input type="text" placeholder="Search..." />
-        </div>
-        <div className="auth-buttons">
-          <button onClick={handleLoginRegisterClick}>Find</button>
+          <div className="auth-buttons">
+            <button onClick={handleLoginRegisterClick}>Find</button>
+          </div>
         </div>
       </div>
 
       <div className="nav-bar">
-        <nav>
-          <ul>
+      <ul>
             <li
               onMouseEnter={handleMouseEnter}
               onMouseLeave={handleMouseLeave}
@@ -107,9 +98,8 @@ const Header = () => {
               <Link to="/login">Login/Register</Link>
             </li>
           </ul>
-        </nav>
       </div>
-    </header>
+    </div>
   );
 };
 

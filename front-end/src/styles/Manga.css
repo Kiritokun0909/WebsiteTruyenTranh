@@ -1,63 +1,65 @@
-.column-layout {
+.manga-layout {
   display: flex;
-  padding: 12px 0px;
+}
+
+.manga-item__sidebar-one,
+.manga-item__sidebar-two {
+  flex: 1;
+  display: block;
   background-color: #ebebeb;
 }
 
-.column-item {
-  flex: 1;
-  text-align: center;
-}
-
-/* Default styles for sidebars */
-.sidebar-one,
-.sidebar-two {
-  display: block;
-}
-
 .main-column {
-  flex: 5;
+  flex: 2;
   background-color: white;
-  padding: 14px 10px;
+  border-radius: 4px;
+  min-height: 80vh;
+}
+
+.manga-item__main-column {
+  flex: 2;
+  background-color: white;
+  padding: 16px 16px;
   border-radius: 4px;
 }
 
-.main-column h1 {
-  margin: 0px 10px 10px 10px;
-}
-
-@media (max-width: 768px) {
-  .sidebar-one,
-  .sidebar-two {
+@media (max-width: 1024px) {
+  .manga-item__sidebar-one,
+  .manga-item__sidebar-two {
     display: none;
   }
-
-  .main-column {
-    flex: 1;
-    width: 100%;
-  }
-}
-
-.manga-detail-head {
-  display: flex;
-}
-
-.manga-cover {
-  width: 150px;
-  border-radius: 5px;
-  margin-bottom: 8px;
-  margin-left: 8px;
 }
 
 .manga-info {
-  padding: 0px 24px;
+  display: flex;
+  padding-bottom: 4px;
+}
+
+.manga-cover {
+  width: 175px;
+  border-radius: 5px;
+}
+
+@media (max-width: 768px) {
+  .manga-info {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .manga-cover {
+    margin: auto;
+  }
+}
+
+.manga-info-detail {
+  padding: 8px 12px;
 }
 
 .list-info {
   display: flex;
   flex-direction: column;
   align-items: flex-start;
-  margin-top: 10px;
+  margin-top: 8px;
 }
 
 .list-info p {
@@ -92,21 +94,11 @@
 
 .manga-description{
   text-align: left;
-  margin-bottom: 8px;
-}
-
-.manga-description p {
-  margin-bottom: 4px;
-  font-size: 16px;
-}
-.manga-description strong {
-  margin-right: 4px;
 }
 
 .manga-description a {
   color: black;
   text-decoration: none;
-  margin: 0px 4px;
   border: none;
   border-radius: 4px;
   background-color: orange;
@@ -128,10 +120,6 @@
   flex-wrap: wrap;
 }
 
-.description {
-  margin-top: 12px;
-}
-
 .header-title  {
   margin-top: 12px;
   text-align: left;
@@ -139,9 +127,9 @@
 }
 
 .manga-chapter {
-  border: 2px solid;
+  border: 1px solid;
   border-radius: 4px;
-  padding: 16px;
+  padding: 8px 12px;
   max-height: 200px;
   overflow: auto;
   min-height: 100px;
@@ -151,7 +139,7 @@
   display: flex;
   justify-content: space-between;
   border-bottom: 1px solid #eee;
-  margin-top: 2px;
+  margin-top: 8px;
 }
 
 .chapter-row a {

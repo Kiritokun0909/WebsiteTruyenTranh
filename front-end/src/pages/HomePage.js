@@ -1,41 +1,37 @@
-// src/components/Header.js
 import React, { useEffect, useState } from "react";
 import { Link, NavLink } from "react-router-dom";
 import ReactPaginate from "react-paginate";
 import "../styles/Home.css";
+import { fetchMangas } from "../api/SiteService";
 
 const HomePage = () => {
   const [totalPages, setTotalPages] = useState(0);
   const [mangas, setMangas] = useState([]);
 
   useEffect(() => {
-    fetchListManga();
+
+    getMangas();
   }, []);
 
-  const fetchListManga = async (pageNumber) => {
+  const getMangas = async (page) => {
     try {
-      const response = await fetch("/mangas/pageNumber=" + pageNumber);
-      if (!response.ok) {
-        throw new Error("Failed to fetch list mangas");
-      }
-      const data = await response.json();
+      const data = await fetchMangas(page);
       setMangas(data.mangas);
       setTotalPages(data.totalPages);
     } catch (error) {
-      console.error("Error fetching list manga:", error);
+      console.error("Error get list manga:", error);
     }
-  };
+  }
 
   const handlePageClick = (event) => {
-    fetchListManga(+event.selected + 1);
+    getMangas(+event.selected + 1);
   };
 
   return (
-    <div className="Home">
-      <div className="column-layout">
-        <div className="column-item sidebar-one"></div>
+    <div className="home-layout">
+        <div className="home-item__sidebar-one"></div>
 
-        <div className="column-item main-column">
+        <div className="home-item__main-column">
           <h1>Latest Updates</h1>
           <div className="manga-list">
             {mangas.map((manga) => (
@@ -68,6 +64,7 @@ const HomePage = () => {
               previousLabel="Previous"
               onPageChange={handlePageClick}
               pageCount={totalPages}
+
               pageClassName="page-item"
               pageLinkClassName="page-link"
               previousClassName="page-item"
@@ -82,9 +79,8 @@ const HomePage = () => {
           </div>
         </div>
 
-        <div className="column-item sidebar-two"></div>
+        <div className="home-item__sidebar-two"></div>
       </div>
-    </div>
   );
 };
 
