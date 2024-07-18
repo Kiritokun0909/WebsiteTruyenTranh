@@ -76,7 +76,7 @@ const Manga = () => {
         <div className="manga-description">
           <div className="genre-list">
             {genres.map((genre) => (
-              <NavLink key={genre.GenreID} to={`/genre/${genre.GenreID}`}>
+              <NavLink key={genre.GenreID} to={`/?genreId=${genre.GenreID}&pageNumber=1`}>
                 {genre.GenreName}
               </NavLink>
             ))}

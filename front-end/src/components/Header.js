@@ -79,7 +79,7 @@ const Header = () => {
                   {genres.map((genre) => (
                     <li key={genre.GenreID}>
                       <Link
-                        to={`/genres/${genre.GenreID}`}
+                        to={`/?genreId=${genre.GenreID}&pageNumber=1`}
                         className="genre-link"
                       >
                         {genre.GenreName}

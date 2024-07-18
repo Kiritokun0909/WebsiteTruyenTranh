@@ -1,17 +1,29 @@
 import React, { useEffect, useState } from "react";
-import { Link, NavLink } from "react-router-dom";
+import { Link, NavLink, useSearchParams, useNavigate } from "react-router-dom";
 import ReactPaginate from "react-paginate";
 import "../styles/Home.css";
 import { fetchMangas } from "../api/SiteService";
 
 const HomePage = () => {
-  const [totalPages, setTotalPages] = useState(0);
+  const [searchParams, setSearchParams] = useSearchParams();
+  const [currentPage, setCurrentPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(1);
   const [mangas, setMangas] = useState([]);
-
+  const navigate = useNavigate();
+  
   useEffect(() => {
+    const page = parseInt(searchParams.get("pageNumber"), 10);
 
-    getMangas();
-  }, []);
+    if (isNaN(page) || page < 1) {
+      navigate("/");
+      setCurrentPage(1);
+      getMangas(1);
+    } else {
+      setCurrentPage(page);
+      getMangas(page);
+    }
+
+  }, [searchParams, navigate]);
 
   const getMangas = async (page) => {
     try {
@@ -21,10 +33,11 @@ const HomePage = () => {
     } catch (error) {
       console.error("Error get list manga:", error);
     }
-  }
+  };
 
   const handlePageClick = (event) => {
-    getMangas(+event.selected + 1);
+    const page = event.selected + 1;
+    setSearchParams({ pageNumber: page });
   };
 
   return (
@@ -64,6 +77,7 @@ const HomePage = () => {
               previousLabel="Previous"
               onPageChange={handlePageClick}
               pageCount={totalPages}
+              forcePage={currentPage - 1}
 
               pageClassName="page-item"
               pageLinkClassName="page-link"

@@ -24,6 +24,10 @@
   .chapter-item__sidebar-two {
     display: none;
   }
+
+  .chapter-item__main-column {
+    border-radius: 0px;
+  }
 }
 
 .chapter-info {

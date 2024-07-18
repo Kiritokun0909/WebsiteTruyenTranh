@@ -27,6 +27,10 @@
   .home-item__sidebar-two {
     display: none;
   }
+
+  .home-item__main-column {
+    border-radius: 0px;
+  }
 }
 
 .manga-list {

@@ -1,4 +1,3 @@
-// Get list genre from api
 export const fetchGenres = async () => {
   try {
     const response = await fetch("/genres");
@@ -11,7 +10,18 @@ export const fetchGenres = async () => {
   }
 };
 
-// Get list manga for homepage from api
+export const fetchGenre = async (genreId) => {
+  try {
+    const response = await fetch("/genre/" + genreId);
+    if (!response.ok) {
+      throw new Error("Failed to fetch genre");
+    }
+    return await response.json();
+  } catch (error) {
+    console.error("Error fetching genre:", error);
+  }
+};
+
 export const fetchMangas = async (pageNumber) => {
   try {
     const response = await fetch("/mangas/pageNumber=" + pageNumber);
@@ -21,6 +31,18 @@ export const fetchMangas = async (pageNumber) => {
     return await response.json();
   } catch (error) {
     console.error("Error fetching list manga:", error);
+  }
+};
+
+export const fetchMangasByGenre = async (genreId, pageNumber) => {
+  try {
+    const response = await fetch("/mangas/genreId=" + genreId +"&pageNumber=" + pageNumber);
+    if (!response.ok) {
+      throw new Error("Failed to fetch list manga by genre");
+    }
+    return await response.json();
+  } catch (error) {
+    console.error("Error fetching list manga by genre:", error);
   }
 };
 

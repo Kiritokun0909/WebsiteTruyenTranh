@@ -1,15 +1,23 @@
 import React from 'react';
-import { Route, Routes } from 'react-router-dom';
+import { Route, Routes, useSearchParams } from 'react-router-dom';
+
 import Header from './components/Header';
 import Footer from './components/Footer';
+import "./styles/App.css";
+
 import HomePage from './pages/HomePage';
+import GenrePage from './pages/GenrePage';
 import Privacy from './pages/PrivacyPage';
 import LoginPage from './pages/LoginPage';
 import Manga from './pages/MangaPage';
 import Chapter from './pages/ChapterPage';
-import "./styles/App.css";
+import NoPage from './pages/NoPage';
+
 
 function App() {
+
+  const [searchParams] = useSearchParams();
+  const genreId = searchParams.get('genreId');
 
   return (
     <div className='App'>
@@ -17,12 +25,12 @@ function App() {
 
       <div className='content'>
         <Routes>
-          <Route path="/" element={<HomePage />} />
-          <Route path="/:id" element={<HomePage />} />
+          <Route path="/" element={genreId ? <GenrePage /> : <HomePage />} />
           <Route path="/privacy" element={<Privacy />} />
           <Route path="/login" element={<LoginPage />} />
           <Route path="/manga/:id" element={<Manga />} />
           <Route path="/chapter/:id" element={<Chapter />} />
+          <Route path="/*" element={<NoPage />} />
         </Routes>
       </div>
 

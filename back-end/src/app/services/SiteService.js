@@ -12,6 +12,19 @@ module.exports.getListGenre = async () => {
     }
 };
 
+module.exports.getGenre = async (genreId) => {
+    try {
+        const [row] = await db.query('SELECT genreid, genrename FROM genre where genreid=?', [genreId]);
+        return {
+            genreId: row[0].genreid,
+            genreName: row[0].genrename
+        };
+    } catch (err) {
+        console.error('Failed to connect to the database\n', err);
+        throw err;
+    }
+};
+
 module.exports.getListManga = async (pageNumber = 1, itemsPerPage = 5) => {
     try {
         const [totalRows] = await db.query('SELECT COUNT(MangaID) as total FROM manga');

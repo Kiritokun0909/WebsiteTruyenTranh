@@ -22,6 +22,23 @@ class SiteController {
         res.json(result);
     }
 
+    // [GET] /genre/{genreId}
+    async getGenre(req, res){
+        const genreId = parseInt(req.params.genreId, 10);
+
+        if (isNaN(genreId) || genreId < 1) {
+            res.status(HTTP_STATUS.BAD_REQUEST).json({ error: 'Invalid GenreId' });
+            return;
+        }
+
+        try {
+            const result = await siteService.getGenre(genreId);
+            res.json(result);
+            return;
+        } catch (err) { }
+        res.status(HTTP_STATUS.NOT_FOUND).json({ error: 'Failed to get genre.' });
+    }
+
     // [GET] /mangas/pageNumber={pageNumber}
     async getListManga(req, res){
         let currentPage = parseInt(req.params.pageNumber, 10) || 1;
