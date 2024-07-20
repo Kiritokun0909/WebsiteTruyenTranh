@@ -1,7 +1,0 @@
-class Genre {
-    constructor() {
-
-    }
-
-    
-}

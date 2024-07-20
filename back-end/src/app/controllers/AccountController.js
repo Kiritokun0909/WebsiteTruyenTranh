@@ -1,28 +1,67 @@
 const accountService = require('../services/AccountService.js');
-const HttpStatus = require('../../configs/HttpStatusCode.js');
+
+const registerAccount = async (req, res, role) => {
+    const { username, email, password } = req.body;
+    try {
+        const result = await accountService.register(username, email, password, role);
+        
+        if(result && result.code == accountService.EMAIL_EXIST_CODE) {
+            res.status(409).json({ message: result.message });
+            return;
+        }
+
+        if(result && result.code == accountService.REGISTER_SUCCESS_CODE) {
+            res.status(201).json({ message: result.message });
+            return;
+        }
+
+    } catch (err) {
+        console.log(err);
+        res.status(500).json({ message: result.message });
+    }
+}
+
+const login = async (req, res) => {
+    const { email, password } = req.body;
+    try {
+        const result = await accountService.login(email, password);
+        
+        if(result && result.code == accountService.LOGIN_SUCCESS_CODE) {
+            res.status(200).json({ roleId: result.roleId, message: result.message });
+            return;
+        }
+
+        if(result && result.code == accountService.LOGIN_FAILED_CODE) {
+            res.status(401).json({ message: result.message });
+            return;
+        }
+
+    } catch (err) {
+        console.log(err);
+        res.status(500).json({ message: result.message });
+    }
+}
 
 class AccountController {
-
-    index(req, res) {
-        res.send('Trang tài khoản');
+    // [POST] /account/login
+    async login(req, res) {
+        return await login(req, res);
     }
 
-    login(req, res) {
-        res.send('login thành công');
+    // [POST] /account/register
+    async registerUser(req, res) {
+        return await registerAccount(req, res, accountService.RoleEnum.USER);
     }
 
-    // [GET] /account/register
-    async register(req, res) {
-        const { username, email, password } = req.body;
-        try {
-            const result = await accountService.register(username, email, password);
-            res.status(HttpStatus.CREATED).json({ message: 'User registered successfully' });
-        } catch (err) {
-            res.status(HttpStatus.INTERNAL_SERVER_ERROR).json({ message: 'Failed to register user' });
-        }
+    // [POST] /account/register
+    async registerTranslator(req, res) {
+        return await registerAccount(req, res, accountService.RoleEnum.TRANSLATOR);
     }
 
-
+    // [POST] /account/register
+    async registerAdmin(req, res) {
+        return await registerAccount(req, res, accountService.RoleEnum.ADMIN);
+    }
 }
 
 module.exports = new AccountController;
