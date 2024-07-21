@@ -49,7 +49,7 @@ module.exports.register = async (username, email, password, roleId) => {
 module.exports.login = async (email, password) => {
     try {
         const query = `
-            SELECT password, roleId FROM account WHERE email = ?
+            SELECT accountId, password, roleId FROM account WHERE email = ?
         `;
         const values = [email];
         const [rows] = await db.query(query, values);
@@ -59,11 +59,20 @@ module.exports.login = async (email, password) => {
         }
 
         const storedPassword = rows[0].password;
+        const accountId = rows[0].accountId;
         const roleId = rows[0].roleId;
         if (password === storedPassword) {
-            return { code: LOGIN_SUCCESS, message: 'Login successfully.', roleId: roleId };
+            return { 
+                code: LOGIN_SUCCESS, 
+                message: 'Login successfully.', 
+                accountId: accountId, 
+                roleId: roleId 
+            };
         } else {
-            return { code: LOGIN_FAILED, message: 'Invalid email or password.' };
+            return { 
+                code: LOGIN_FAILED, 
+                message: 'Invalid email or password.' 
+            };
         }
 
     } catch (err) {

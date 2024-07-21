@@ -1,4 +1,6 @@
 const accountService = require('../services/AccountService.js');
+const { generateToken } = require('../../middleware/jwt.js');
+
 
 const registerAccount = async (req, res, role) => {
     const { username, email, password } = req.body;
@@ -17,35 +19,47 @@ const registerAccount = async (req, res, role) => {
 
     } catch (err) {
         console.log(err);
-        res.status(500).json({ message: result.message });
+        res.status(500).json({ message: 'Failed to register account.' });
     }
 }
+
 
 const login = async (req, res) => {
     const { email, password } = req.body;
     try {
         const result = await accountService.login(email, password);
-        
-        if(result && result.code == accountService.LOGIN_SUCCESS_CODE) {
-            res.status(200).json({ roleId: result.roleId, message: result.message });
-            return;
-        }
 
         if(result && result.code == accountService.LOGIN_FAILED_CODE) {
             res.status(401).json({ message: result.message });
             return;
         }
 
+        if(result && result.code == accountService.LOGIN_SUCCESS_CODE) {
+            const token = generateToken(result.accountId, result.roleId);
+            res.status(200).json({ token: token, roleId: result.roleId, message: result.message });
+            return;
+        }
+
     } catch (err) {
         console.log(err);
-        res.status(500).json({ message: result.message });
+        res.status(500).json({ message: 'Failed to login account.' });
     }
 }
 
 class AccountController {
+    // [GET] /account/index
+    async index(req, res) {
+        res.send('Hello logout');
+    }
+
     // [POST] /account/login
     async login(req, res) {
         return await login(req, res);
+    }
+
+    // [GET] /account/logout
+    async logout(req, res) {
+        res.send('Logout successfully.');
     }
 
     // [POST] /account/register
