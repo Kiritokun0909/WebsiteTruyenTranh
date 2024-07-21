@@ -11,16 +11,25 @@ const REGISTER_FAILED = 1002;
 const LOGIN_SUCCESS = 1003;
 const LOGIN_FAILED = 1004;
 
+const UPDATE_SUCCESS = 1005;
+const UPDATE_FAILED = 1006;
+
 module.exports = { 
     RoleEnum,
+
     EMAIL_EXIST_CODE: EMAIL_EXIST,
     REGISTER_SUCCESS_CODE: REGISTER_SUCCESS,
     REGISTER_FAILED_CODE: REGISTER_FAILED,
+
     LOGIN_SUCCESS_CODE: LOGIN_SUCCESS,
-    LOGIN_FAILED_CODE: LOGIN_FAILED
+    LOGIN_FAILED_CODE: LOGIN_FAILED,
+
+    UPDATE_SUCCESS_CODE: UPDATE_SUCCESS,
+    UPDATE_FAILED_CODE: UPDATE_FAILED,
 };
 
 const db = require('../../configs/DatabaseConfig.js');
+
 
 module.exports.register = async (username, email, password, roleId) => {
     try {
@@ -45,6 +54,7 @@ module.exports.register = async (username, email, password, roleId) => {
         throw err;
     }
 }
+
 
 module.exports.login = async (email, password) => {
     try {
@@ -77,6 +87,46 @@ module.exports.login = async (email, password) => {
 
     } catch (err) {
         console.error('Failed to login account:', err);
+        throw err;
+    }
+}
+
+
+module.exports.updateUsername = async (accountId, newUsername) => {
+    try {
+        const query = `
+            UPDATE account
+            SET
+                \`Username\` = ?
+            WHERE \`AccountID\` = ?;
+        `;
+        const values = [newUsername, accountId];
+        const [result] = await db.query(query, values);
+
+        console.log(result);
+
+        return { code: UPDATE_SUCCESS, message: 'Update username successfully.' };;
+    } catch (err) {
+        console.error('Failed to update successfully:', err);
+        throw err;
+    }
+}
+
+
+module.exports.changePassword = async (accountId, newPassword) => {
+    try {
+        const query = `
+            UPDATE account
+            SET
+                \`Password\` = ?
+            WHERE \`AccountID\` = ?;
+        `;
+        const values = [newPassword, accountId];
+        const [result] = await db.query(query, values);
+
+        return { code: UPDATE_SUCCESS, message: 'Change password successfully.' };;
+    } catch (err) {
+        console.error('Failed to change password:', err);
         throw err;
     }
 }

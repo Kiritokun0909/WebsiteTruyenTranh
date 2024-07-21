@@ -17,3 +17,23 @@ module.exports.validLoginBody = (req, res, next) => {
     
     next();
 };
+
+module.exports.validUpdatePasswordBody = (req, res, next) => {
+    const {newPassword } = req.body;
+    
+    if (!newPassword) {
+        return res.status(400).json({ success: false, message: 'New password are required' });
+    }
+    
+    next();
+};
+
+module.exports.validUpdateUsernameBody = (req, res, next) => {
+    const {newUsername } = req.body;
+    
+    if (!newUsername) {
+        return res.status(400).json({ success: false, message: 'New username are required' });
+    }
+    
+    next();
+};

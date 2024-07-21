@@ -46,20 +46,47 @@ const login = async (req, res) => {
     }
 }
 
+
+const updateUsername = async (req, res) => {
+    const accountId  = req.user.id;
+    const { newUsername } = req.body;
+    try {
+        const result = await accountService.updateUsername(accountId, newUsername);
+
+        if(result && result.code == accountService.UPDATE_SUCCESS_CODE) {
+            res.status(200).json({ message: result.message });
+            return;
+        }
+
+    } catch (err) {
+        console.log(err);
+        res.status(500).json({ message: 'Failed to update username.' });
+    }
+}
+
+
+const changePassword = async (req, res) => {
+    const accountId  = req.user.id;
+    const { newPassword } = req.body;
+    try {
+        const result = await accountService.changePassword(accountId, newPassword);
+
+        if(result && result.code == accountService.UPDATE_SUCCESS_CODE) {
+            res.status(200).json({ message: result.message });
+            return;
+        }
+
+    } catch (err) {
+        console.log(err);
+        res.status(500).json({ message: 'Failed to update password.' });
+    }
+}
+
+
 class AccountController {
     // [GET] /account/index
     async index(req, res) {
         res.send('Hello logout');
-    }
-
-    // [POST] /account/login
-    async login(req, res) {
-        return await login(req, res);
-    }
-
-    // [GET] /account/logout
-    async logout(req, res) {
-        res.send('Logout successfully.');
     }
 
     // [POST] /account/register
@@ -75,6 +102,26 @@ class AccountController {
     // [POST] /account/register
     async registerAdmin(req, res) {
         return await registerAccount(req, res, accountService.RoleEnum.ADMIN);
+    }
+
+    // [POST] /account/login
+    async login(req, res) {
+        return await login(req, res);
+    }
+
+    // [GET] /account/logout
+    async logout(req, res) {
+        res.send('Logout successfully.');
+    }
+
+    // [POST] /account/update-username
+    async updateUsername(req, res) {
+        return await updateUsername(req, res);
+    }
+
+    // [POST] /account/update-password
+    async changePassword(req, res) {
+        return await changePassword(req, res);
     }
 }
 
