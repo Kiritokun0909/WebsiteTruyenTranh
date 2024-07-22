@@ -1,23 +1,26 @@
 const express = require('express');
 const router = express.Router();
 
-const validation = require('../middleware/AccountRouteValidation.js');
+const validation = require('../middleware/AuthRouteValidation.js');
 const controller = require('../app/controllers/AccountController.js');
-const accountService = require('../app/services/AccountService.js');
+const authService = require('../app/services/AuthService.js');
 
 const { verifyToken, authorizeRole } =  require('../middleware/jwt.js');
 
-router.post('/register-admin', validation.validRegisterBody, controller.registerAdmin);
-router.post('/register-translator', validation.validRegisterBody, controller.registerTranslator);
-router.post('/register', validation.validRegisterBody, controller.registerUser);
 
-router.post('/login', validation.validLoginBody, controller.login);
-router.use('/logout', verifyToken, controller.logout);
+router.put('/update-username', verifyToken, validation.validUpdateUsernameBody, controller.updateUsername);
+router.put('/update-password', verifyToken, validation.validUpdatePasswordBody, controller.changePassword);
 
-router.post('/update-username', verifyToken, validation.validUpdateUsernameBody, controller.updateUsername);
-router.post('/update-password', verifyToken, validation.validUpdatePasswordBody, controller.changePassword);
+router.post('/like-manga/:mangaId', verifyToken, controller.like);
+router.post('/unlike-manga/:mangaId', verifyToken, controller.unlike);
 
-router.use('/index', verifyToken, authorizeRole(accountService.RoleEnum.ADMIN), controller.index);
+router.post('/follow-manga/:mangaId', verifyToken, controller.follow);
+router.post('/unfollow-manga/:mangaId', verifyToken, controller.unfollow);
+
+router.get('/like-list/pageNumber=:pageNumber', verifyToken, controller.getListLike);
+router.get('/follow-list/pageNumber=:pageNumber', verifyToken, controller.getListFollow);
+
+router.use('/index', verifyToken, authorizeRole(authService.RoleEnum.ADMIN), controller.index);
 
 
 module.exports = router;

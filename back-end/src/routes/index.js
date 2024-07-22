@@ -2,6 +2,7 @@ const adminRoute = require('./admin.js');
 const translatorRoute = require('./translator.js');
 const userRoute = require('./user.js');
 const accountRoute = require('./account.js');
+const authRoute = require('./auth.js');
 const siteRouter = require('./site.js');
 
 function route(app) {
@@ -9,6 +10,7 @@ function route(app) {
     app.use('/translator', translatorRoute);
     app.use('/user', userRoute);
     app.use('/account', accountRoute);
+    app.use('/auth', authRoute);
     app.use('/', siteRouter);
 }
 

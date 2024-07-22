@@ -1,5 +1,11 @@
 const db = require('../../configs/DatabaseConfig.js');
 
+const NOT_FOUND = 100;
+module.exports = { 
+    NOT_FOUND_CODE: NOT_FOUND,
+
+};
+
 module.exports.getListGenre = async () => {
     try {
         const [rows] = await db.query('SELECT * FROM genre ORDER BY GenreName');
@@ -15,6 +21,11 @@ module.exports.getListGenre = async () => {
 module.exports.getGenre = async (genreId) => {
     try {
         const [row] = await db.query('SELECT genreid, genrename FROM genre where genreid=?', [genreId]);
+
+        if (row.length === 0) {
+            return { code: NOT_FOUND, message: 'Cannot found genre with id=' + genreId + '.' };
+        }
+
         return {
             genreId: row[0].genreid,
             genreName: row[0].genrename
@@ -113,6 +124,10 @@ module.exports.getManga = async (mangaId) => {
             [mangaId]
         );
 
+        if (mangaRow.length === 0) {
+            return { code: NOT_FOUND, message: 'Cannot found manga with id=' + mangaId + '.' };
+        }
+
         const [genreRows] = await db.query(
             `select g.GenreID, g.GenreName
             from mangagenre mg
@@ -173,6 +188,10 @@ module.exports.getChapter = async (chapterId) => {
             LIMIT 1;`, 
             [chapterId]
         );
+
+        if (chapterInfoRows.length === 0) {
+            return { code: NOT_FOUND, message: 'Cannot found chapter with id=' + chapterId + '.' };
+        }
 
         const [chapterImageRows] = await db.query(
             `select OrderNumber, ImageUrl 

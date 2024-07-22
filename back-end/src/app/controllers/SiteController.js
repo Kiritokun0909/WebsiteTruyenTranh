@@ -1,19 +1,12 @@
 const accountService = require('../services/AccountService.js'); // Adjust the path as needed
 const siteService = require('../services/SiteService.js');
-const HANDLE_CODE = require('../../configs/HandleCode.js')
-const HTTP_STATUS = require('../../configs/HttpStatusCode.js')
+const HANDLE_CODE = require('../../configs/HandleCode.js');
+const HTTP_STATUS = require('../../configs/HttpStatusCode.js');
 
 class SiteController {
-    
     // [GET] /
     index(req, res) {
         res.send('<h1>Hello World!</h1>');
-    }
-
-    // [GET] /roles
-    async getAllRoles(req, res){
-        const data = await accountService.getListRole();
-        res.json(data);
     }
     
     // [GET] /genres
@@ -33,6 +26,12 @@ class SiteController {
 
         try {
             const result = await siteService.getGenre(genreId);
+
+            if(result && result.code == siteService.NOT_FOUND_CODE) {
+                res.status(404).json({ message: result.message });
+                return;
+            }
+
             res.json(result);
             return;
         } catch (err) { }
@@ -79,9 +78,9 @@ class SiteController {
         res.status(HTTP_STATUS.INTERNAL_SERVER_ERROR).json({ error: 'Failed to get list manga by genre' });
     }
 
-    // [GET] /manga/{id}
+    // [GET] /manga/{mangaId}
     async getManga(req, res){
-        let mangaId = parseInt(req.params.id, 10);
+        let mangaId = parseInt(req.params.mangaId, 10);
 
         if (isNaN(mangaId) || mangaId < 1) {
             res.status(HTTP_STATUS.BAD_REQUEST).json({ error: 'Invalid MangaId' });
@@ -90,6 +89,12 @@ class SiteController {
 
         try {
             const result = await siteService.getManga(mangaId);
+
+            if(result && result.code == siteService.NOT_FOUND_CODE) {
+                res.status(404).json({ message: result.message });
+                return;
+            }
+
             if(result.manga.length > 0 ){
                 res.json(result);
                 return;
@@ -98,7 +103,7 @@ class SiteController {
         res.status(HTTP_STATUS.NOT_FOUND).json({ error: 'Failed to get manga.' });
     }
 
-    // [GET] /chapter/{id}
+    // [GET] /chapter/{chapterId}
     async getChapter(req, res){
         const chapterId = parseInt(req.params.chapterId, 10);
 
@@ -109,6 +114,12 @@ class SiteController {
 
         try {
             const result = await siteService.getChapter(chapterId);
+
+            if(result && result.code == siteService.NOT_FOUND_CODE) {
+                res.status(404).json({ message: result.message });
+                return;
+            }
+
             res.json(result);
             return;
         } catch (err) { }
