@@ -52,7 +52,7 @@ module.exports.getListManga = async (pageNumber = 1, itemsPerPage = 5) => {
 
         const offset = (pageNumber - 1) * itemsPerPage;
         const [rows] = await db.query(
-            'SELECT MangaID, CoverImageUrl, StoryName, NumChapter FROM manga LIMIT ? OFFSET ?',
+            'SELECT MangaID, CoverImageUrl, StoryName, NumChapter FROM manga ORDER BY UpdateDate DESC LIMIT ? OFFSET ?',
             [itemsPerPage, offset]
         );
 

@@ -7,7 +7,7 @@ class AccountController {
         res.send('Hello index');
     }
 
-    // [POST] /account/update-username
+    // [PUT] /account/update-username
     async updateUsername(req, res) {
         const accountId  = req.user.id;
         const { newUsername } = req.body;
@@ -25,7 +25,7 @@ class AccountController {
         }
     }
 
-    // [POST] /account/update-password
+    // [PUT] /account/update-password
     async changePassword(req, res) {
         const accountId  = req.user.id;
         const { newPassword } = req.body;
@@ -185,6 +185,67 @@ class AccountController {
         res.status(500).json({ error: 'Failed to get like list' });
     }
 
+    // [POST] /account/comment-manga/{mangaId}
+    async commentManga(req, res){
+        const accountId  = req.user.id;
+        const { context } = req.body;
+        const mangaId = parseInt(req.params.mangaId, 10) || 1;
+        
+        if (isNaN(mangaId) || mangaId < 1) {
+            res.status(400).json({ error: 'Invalid MangaID' });
+            return;
+        }
+
+        try {
+            const result = await accountService.commentManga(accountId, mangaId, context);
+
+            if(result && result.code == accountService.FAILED_CODE) {
+                res.status(400).json({ message: result.message });
+                return;
+            }
+            
+            if(result && result.code == accountService.SUCCESS_CODE) {
+                res.status(200).json({ message: result.message });
+                return;
+            }
+
+        } catch (err) { 
+            console.log(err);
+            res.status(500).json({ error: 'Failed to comment manga' });
+        }
+        
+    }
+
+    // [POST] /account/comment-chapter/{chapterId}
+    async commentChapter(req, res){
+        const accountId  = req.user.id;
+        const { context } = req.body;
+        const chapterId = parseInt(req.params.chapterId, 10) || 1;
+        
+        if (isNaN(chapterId) || chapterId < 1) {
+            res.status(400).json({ error: 'Invalid ChapterID' });
+            return;
+        }
+
+        try {
+            const result = await accountService.commentChapter(accountId, chapterId, context);
+
+            if(result && result.code == accountService.FAILED_CODE) {
+                res.status(400).json({ message: result.message });
+                return;
+            }
+            
+            if(result && result.code == accountService.SUCCESS_CODE) {
+                res.status(200).json({ message: result.message });
+                return;
+            }
+
+        } catch (err) { 
+            console.log(err);
+            res.status(500).json({ error: 'Failed to comment chapter' });
+        }
+        
+    }
 }
 
 module.exports = new AccountController;

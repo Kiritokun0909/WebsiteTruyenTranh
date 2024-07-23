@@ -20,6 +20,9 @@ router.post('/unfollow-manga/:mangaId', verifyToken, controller.unfollow);
 router.get('/like-list/pageNumber=:pageNumber', verifyToken, controller.getListLike);
 router.get('/follow-list/pageNumber=:pageNumber', verifyToken, controller.getListFollow);
 
+router.post('/comment-manga/:mangaId', verifyToken, controller.commentManga);
+router.post('/comment-chapter/:chapterId', verifyToken, controller.commentChapter);
+
 router.use('/index', verifyToken, authorizeRole(authService.RoleEnum.ADMIN), controller.index);
 
 

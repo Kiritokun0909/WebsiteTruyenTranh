@@ -49,7 +49,6 @@ module.exports.changePassword = async (accountId, newPassword) => {
     }
 }
 
-
 module.exports.likeManga = async (accountId, mangaId) => {
     try {
         const query = `INSERT INTO \`like\` (AccountID, MangaID) VALUES (?, ?);`;
@@ -198,6 +197,54 @@ module.exports.getListFollow = async (accountId, pageNumber = 1, itemsPerPage = 
         };
     } catch (err) {
         console.error('Failed to connect to the database\n', err);
+        throw err;
+    }
+}
+
+module.exports.commentManga = async (accountId, mangaId, context) => {
+    try {
+        const query = `
+        INSERT INTO commentmanga 
+            (\`AccountID\`, \`MangaID\`, \`Context\`) 
+        VALUES 
+            (?, ?, ?);
+        `;
+
+        const values = [accountId, mangaId, context];
+        const [result] = await db.query(query, values);
+
+        return { code: SUCCESS, message: 'Comment manga successfully.' };;
+
+    } catch (err) {
+        if (err.code === 'ER_NO_REFERENCED_ROW_2') {
+            return { code: FAILED, message: 'MangaId=' + mangaId + ' not exists.' };
+        }
+
+        console.error('Failed to comment manga:', err);
+        throw err;
+    }
+}
+
+module.exports.commentChapter = async (accountId, chapterId, context) => {
+    try {
+        const query = `
+        INSERT INTO commentchapter 
+            (\`AccountID\`, \`ChapterID\`, \`Context\`) 
+        VALUES 
+            (?, ?, ?);
+        `;
+
+        const values = [accountId, chapterId, context];
+        const [result] = await db.query(query, values);
+
+        return { code: SUCCESS, message: 'Comment chapter successfully.' };;
+
+    } catch (err) {
+        if (err.code === 'ER_NO_REFERENCED_ROW_2') {
+            return { code: FAILED, message: 'ChapterId=' + chapterId + ' not exists.' };
+        }
+
+        console.error('Failed to comment chapter:', err);
         throw err;
     }
 }
