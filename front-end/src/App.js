@@ -5,13 +5,19 @@ import Header from './components/Header';
 import Footer from './components/Footer';
 import "./styles/App.css";
 
-import HomePage from './pages/HomePage';
-import GenrePage from './pages/GenrePage';
-import Privacy from './pages/PrivacyPage';
-import LoginPage from './pages/LoginPage';
-import Manga from './pages/MangaPage';
-import Chapter from './pages/ChapterPage';
-import NoPage from './pages/NoPage';
+import HomePage from './pages/site/HomePage';
+import GenrePage from './pages/site/GenrePage';
+import Privacy from './pages/site/PrivacyPage';
+import LoginPage from './pages/site/LoginPage';
+import Manga from './pages/site/MangaPage';
+import Chapter from './pages/site/ChapterPage';
+import NoPage from './pages/site/NoPage';
+
+import UploadForm from './pages/admin/UploadMangaPage';
+
+import AccountPage from './pages/account/AccountPage';
+import LikePage from './pages/account/LikePage';
+import FollowPage from './pages/account/FollowPage';
 
 
 function App() {
@@ -30,6 +36,13 @@ function App() {
           <Route path="/login" element={<LoginPage />} />
           <Route path="/manga/:id" element={<Manga />} />
           <Route path="/chapter/:id" element={<Chapter />} />
+
+
+          <Route path='/account' element={<AccountPage />} />
+          <Route path='/like-list' element={<LikePage />} />
+          <Route path='/follow-list' element={<FollowPage />} />
+
+          <Route path="/upload-manga" element={<UploadForm />} />
           <Route path="/*" element={<NoPage />} />
         </Routes>
       </div>

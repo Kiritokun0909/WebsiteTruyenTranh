@@ -12,8 +12,7 @@ header {
 }
 
 .logo {
-  margin-right: 12px;
-  align-items: center;
+  margin: auto;
 }
 
 .logo a {
@@ -23,9 +22,14 @@ header {
   color: white;
 }
 
+.logo a:hover {
+  color: orange;
+}
+
 .search-bar {
   display: flex;
   flex: 1;
+  margin-left: 12px;
 }
 
 .search-bar input {
@@ -106,5 +110,33 @@ header {
 }
 
 .sub-menu li a:hover {
+  color: orange;
+}
+
+.account-sub-menu {
+  display: flex;
+  flex-direction: column;
+  position: absolute;
+  background-color: #343a40;
+  z-index: 1000;
+  border-radius: 4px;
+}
+
+.account-sub-menu li {
+  text-align: center;
+  margin-top: 4px;
+  padding: 6px 0px;
+  cursor: pointer;
+  border-top: 1px solid grey;
+}
+
+.account-sub-menu li a {
+  color: white;
+  text-decoration: none;
+  padding: 4px;
+  transition: background-color 0.3s ease;
+}
+
+.account-sub-menu li a:hover {
   color: orange;
 }

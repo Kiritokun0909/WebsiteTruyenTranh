@@ -1,10 +1,10 @@
 import React, { useEffect, useState } from "react";
 import { Link, NavLink, useSearchParams, useNavigate } from "react-router-dom";
 import ReactPaginate from "react-paginate";
-import "../styles/Home.css";
-import { fetchMangas } from "../api/SiteService";
+import "../../styles/Home.css";
+import { fetchListFollow } from "../../api/AccountService";
 
-const HomePage = () => {
+const FollowPage = () => {
   const [searchParams, setSearchParams] = useSearchParams();
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
@@ -15,7 +15,7 @@ const HomePage = () => {
     const page = parseInt(searchParams.get("pageNumber"), 10);
 
     if (isNaN(page) || page < 1) {
-      navigate("/");
+      navigate("/follow-list");
       setCurrentPage(1);
       getMangas(1);
     } else {
@@ -27,7 +27,7 @@ const HomePage = () => {
 
   const getMangas = async (page) => {
     try {
-      const data = await fetchMangas(page);
+      const data = await fetchListFollow(page);
       setMangas(data.mangas);
       setTotalPages(data.totalPages);
     } catch (error) {
@@ -63,7 +63,7 @@ const HomePage = () => {
                 </nav>
                 <nav id="chapter">
                   <NavLink to={`/manga/${manga.MangaID}/${manga.NumChapter}`}>
-                    Chapter {manga.NumChapter}
+                    {manga.NumChapter}
                   </NavLink>
                 </nav>
               </div>
@@ -98,4 +98,4 @@ const HomePage = () => {
   );
 };
 
-export default HomePage;
+export default FollowPage;

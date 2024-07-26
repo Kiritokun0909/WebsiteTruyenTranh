@@ -1,3 +1,6 @@
+const bcrypt = require('bcrypt');
+const saltRounds = 10;
+
 const RoleEnum = {
     ADMIN: 1,
     TRANSLATOR: 2,
@@ -25,8 +28,10 @@ module.exports = {
 const db = require('../../configs/DatabaseConfig.js');
 
 
-module.exports.register = async (username, email, password, roleId) => {
+module.exports.register = async (username = "username", email, password, roleId) => {
     try {
+        const hashedPassword = await bcrypt.hash(password, saltRounds);
+
         const query = `
             INSERT INTO account (
                 \`Username\`,
@@ -35,7 +40,7 @@ module.exports.register = async (username, email, password, roleId) => {
                 \`RoleID\`
             ) VALUES (?, ?, ?, ?)
         `;
-        const values = [username, email, password, roleId];
+        const values = [username, email, hashedPassword, roleId];
         const [result] = await db.query(query, values);
 
         return { code: REGISTER_SUCCESS, message: 'Register account successfully.' };;
@@ -65,7 +70,9 @@ module.exports.login = async (email, password) => {
         const storedPassword = rows[0].password;
         const accountId = rows[0].accountId;
         const roleId = rows[0].roleId;
-        if (password === storedPassword) {
+
+        const isMatch = await bcrypt.compare(password, storedPassword);
+        if (isMatch) {
             return { 
                 code: LOGIN_SUCCESS, 
                 message: 'Login successfully.', 

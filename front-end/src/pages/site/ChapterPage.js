@@ -1,9 +1,9 @@
 // src/components/Header.js
 import React, { useEffect, useState } from "react";
 import { NavLink, useParams } from "react-router-dom";
-import "../styles/Chapter.css";
+import "../../styles/Chapter.css";
 
-import { fetchChapter } from "../api/SiteService";
+import { fetchChapter } from "../../api/SiteService";
 
 const Chapter = () => {
   const { id } = useParams();

@@ -2,9 +2,21 @@ const accountService = require('../services/AccountService.js');
 const HANDLE_CODE = require('../../configs/HandleCode.js');
 
 class AccountController {
-    // [GET] /account/index
-    async index(req, res) {
-        res.send('Hello index');
+    // [GET] /account/get-username
+    async getUsername(req, res) {
+        const accountId  = req.user.id;
+        try {
+            const result = await accountService.getUsername(accountId);
+
+            if(result && result.code == accountService.SUCCESS_CODE) {
+                res.status(200).json({ username: result.username });
+                return;
+            }
+
+        } catch (err) {
+            console.log(err);
+            res.status(500).json({ message: 'Failed to get username.' });
+        }
     }
 
     // [PUT] /account/update-username
@@ -14,7 +26,7 @@ class AccountController {
         try {
             const result = await accountService.updateUsername(accountId, newUsername);
 
-            if(result && result.code == accountService.UPDATE_SUCCESS_CODE) {
+            if(result && result.code == accountService.SUCCESS_CODE) {
                 res.status(200).json({ message: result.message });
                 return;
             }
@@ -25,6 +37,7 @@ class AccountController {
         }
     }
 
+
     // [PUT] /account/update-password
     async changePassword(req, res) {
         const accountId  = req.user.id;
@@ -32,7 +45,7 @@ class AccountController {
         try {
             const result = await accountService.changePassword(accountId, newPassword);
 
-            if(result && result.code == accountService.UPDATE_SUCCESS_CODE) {
+            if(result && result.code == accountService.SUCCESS_CODE) {
                 res.status(200).json({ message: result.message });
                 return;
             }
@@ -42,6 +55,7 @@ class AccountController {
             res.status(500).json({ message: 'Failed to update password.' });
         }
     }
+
 
     // [POST] /account/like-manga/{mangaId}
     async like(req, res) {
@@ -72,6 +86,7 @@ class AccountController {
         }
     }
 
+
     // [POST] /account/follow-manga/{mangaId}
     async follow(req, res) {
         const accountId  = req.user.id;
@@ -101,6 +116,7 @@ class AccountController {
         }
     }
 
+
     // [POST] /account/unlike-manga/{mangaId}
     async unlike(req, res) {
         const accountId  = req.user.id;
@@ -124,6 +140,7 @@ class AccountController {
             res.status(500).json({ message: 'Failed to like manga.' });
         }
     }
+
 
     // [POST] /account/unfollow-manga/{mangaId}
     async unfollow(req, res) {
@@ -149,6 +166,7 @@ class AccountController {
         }
     }
 
+
     // [GET] /account/like-list/pageNumber={pageNumber}
     async getListLike(req, res){
         const accountId  = req.user.id;
@@ -167,6 +185,7 @@ class AccountController {
         res.status(500).json({ error: 'Failed to get like list' });
     }
     
+
     // [GET] /account/follow-list/pageNumber={pageNumber}
     async getListFollow(req, res){
         const accountId  = req.user.id;
@@ -184,6 +203,7 @@ class AccountController {
         } catch (err) { }
         res.status(500).json({ error: 'Failed to get like list' });
     }
+
 
     // [POST] /account/comment-manga/{mangaId}
     async commentManga(req, res){
@@ -216,6 +236,7 @@ class AccountController {
         
     }
 
+
     // [POST] /account/comment-chapter/{chapterId}
     async commentChapter(req, res){
         const accountId  = req.user.id;
@@ -246,6 +267,8 @@ class AccountController {
         }
         
     }
+
+    
 }
 
 module.exports = new AccountController;

@@ -142,8 +142,8 @@ module.exports.getManga = async (mangaId) => {
             where MangaId = ?
             order by 
                 CAST(SUBSTRING_INDEX(chaptername, ' ', -1) AS DECIMAL) desc,
-                LENGTH(chaptername),
-                chaptername;`, 
+                LENGTH(chaptername) desc
+                ;`, 
             [mangaId]
         );
 
@@ -200,8 +200,23 @@ module.exports.getChapter = async (chapterId) => {
             [chapterId]
         );
 
+        // Update +1 view for manga
+        const mangaId = chapterInfoRows[0].mangaid;
+        const [infoRow] = await db.query(`
+            SELECT NumViews FROM manga WHERE MangaID = ?;
+        `, [mangaId]);
+
+        const NumViews = infoRow[0].NumViews + 1;
+
+        const [updateManga] = await db.query(`
+            UPDATE manga
+            SET
+                \`NumViews\` = ?
+            WHERE MangaID = ?;
+        `, [NumViews, mangaId]);
+
         return {
-            mangaId: chapterInfoRows[0].mangaid,
+            mangaId: mangaId,
             mangaName: chapterInfoRows[0].storyname,
             chapterName: chapterInfoRows[0].chaptername,
             previousChapterId: chapterInfoRows[0].prev_chapterid,

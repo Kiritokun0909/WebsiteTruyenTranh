@@ -5,14 +5,14 @@ const { generateToken } = require('../../middleware/jwt.js');
 const registerAccount = async (req, res, role) => {
     const { username, email, password } = req.body;
     try {
-        const result = await accountService.register(username, email, password, role);
+        const result = await authService.register(username, email, password, role);
         
-        if(result && result.code == accountService.EMAIL_EXIST_CODE) {
+        if(result && result.code == authService.EMAIL_EXIST_CODE) {
             res.status(409).json({ message: result.message });
             return;
         }
 
-        if(result && result.code == accountService.REGISTER_SUCCESS_CODE) {
+        if(result && result.code == authService.REGISTER_SUCCESS_CODE) {
             res.status(201).json({ message: result.message });
             return;
         }

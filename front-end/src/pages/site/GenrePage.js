@@ -1,11 +1,11 @@
 import React, { useEffect, useState } from "react";
 import { Link, NavLink, useSearchParams, useNavigate } from "react-router-dom";
 import ReactPaginate from "react-paginate";
-import "../styles/Home.css";
-import "../styles/Genre.css";
-import { fetchMangasByGenre, fetchGenre } from "../api/SiteService";
+import "../../styles/Home.css";
+import "../../styles/Genre.css";
+import { fetchMangasByGenre, fetchGenre } from "../../api/SiteService";
 
-const HomePage = () => {
+const GenrePage = () => {
   const [searchParams, setSearchParams] = useSearchParams();
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
@@ -79,7 +79,7 @@ const HomePage = () => {
               </nav>
               <nav id="chapter">
                 <NavLink to={`/manga/${manga.MangaID}/${manga.NumChapter}`}>
-                  Chapter {manga.NumChapter}
+                  {manga.NumChapter}
                 </NavLink>
               </nav>
             </div>
@@ -113,4 +113,4 @@ const HomePage = () => {
   );
 };
 
-export default HomePage;
+export default GenrePage;

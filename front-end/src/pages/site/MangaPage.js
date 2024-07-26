@@ -1,9 +1,9 @@
 // src/components/Header.js
 import React, { useEffect, useState } from "react";
 import { NavLink, useParams } from "react-router-dom";
-import "../styles/Manga.css";
+import "../../styles/Manga.css";
 
-import { fetchManga } from "../api/SiteService";
+import { fetchManga } from "../../api/SiteService";
 
 const Manga = () => {
   const { id } = useParams();
