@@ -1,7 +1,8 @@
 // src/components/LoginPage.js
-import React, { useState } from 'react';
+import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import '../../styles/Login.css';
+import "../../styles/Login.css";
+import { login, register } from "../../api/AuthService.js";
 
 const LoginPage = () => {
   const [isLogin, setIsLogin] = useState(true);
@@ -14,48 +15,40 @@ const LoginPage = () => {
   const handleSubmit = async (event) => {
     event.preventDefault();
     const { email, password, confirmPassword } = event.target.elements;
-    const apiEndpoint = isLogin ? '/auth/login' : '/auth/register';
-    const body = {
-      email: email.value,
-      password: password.value,
-      ...(isLogin ? {} : { confirmPassword: confirmPassword.value })
-    };
 
     try {
       if (!isLogin && password.value !== confirmPassword.value) {
-        alert("Passwords do not match");
+        alert("Password không trùng khớp");
         return;
       }
 
-      const response = await fetch(apiEndpoint, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify(body)
-      });
+      const response = await (isLogin
+        ? login(email.value, password.value)
+        : register(email.value, password.value));
 
-      const data = await response.json();
       if (response.ok) {
-        console.log(data);
-        const { token } = data;
-        localStorage.setItem('authToken', token);
-        // alert('Success!');
+        const data = await response.json();
+        const { token, roleId } = data;
+
+        localStorage.setItem("authToken", token);
+        localStorage.setItem("roleId", roleId);
+
         navigate("/");
         window.location.reload();
       } else {
-        alert(data.message || 'An error occurred');
+        const errorData = await response.json();
+        const errorMessage = errorData.message || "An error occurred";
+        alert(errorMessage);
       }
     } catch (error) {
-      console.error('Error:', error);
-      alert('An error occurred');
+      console.error("Error:", error);
+      alert("An error occurred");
     }
-    
   };
 
   return (
     <div className="auth-container">
-      <h2>{isLogin ? 'Login' : 'Register'}</h2>
+      <h2>{isLogin ? "Đăng nhập" : "Đăng ký"}</h2>
       <form onSubmit={handleSubmit}>
         <div>
           <label>Email:</label>
@@ -67,15 +60,15 @@ const LoginPage = () => {
         </div>
         {!isLogin && (
           <div>
-            <label>Confirm Password:</label>
+            <label>Nhập lại mật khẩu:</label>
             <input type="password" name="confirmPassword" required />
           </div>
         )}
-        <button type="submit">{isLogin ? 'Login' : 'Register'}</button>
+        <button type="submit">{isLogin ? "Đăng nhập" : "Đăng ký"}</button>
       </form>
 
       <button className="toggle-button" onClick={toggleAuthMode}>
-        {isLogin ? 'Switch to Register' : 'Switch to Login'}
+        {isLogin ? "Đăng ký" : "Đăng nhập"}
       </button>
     </div>
   );

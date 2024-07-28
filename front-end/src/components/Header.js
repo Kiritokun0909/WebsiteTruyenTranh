@@ -3,16 +3,43 @@ import { Link, useNavigate } from "react-router-dom";
 import "../styles/Header.css";
 import { fetchGenres } from "../api/SiteService";
 
+const useDropdownVisibility = () => {
+  const [isVisible, setIsVisible] = useState(false);
+  const buttonRef = useRef(null);
+  const subMenuRef = useRef(null);
+
+  const show = () => setIsVisible(true);
+  const hide = () => setIsVisible(false);
+
+  const handleOutsideClick = (event) => {
+    if (
+      buttonRef.current &&
+      !buttonRef.current.contains(event.target) &&
+      subMenuRef.current &&
+      !subMenuRef.current.contains(event.target)
+    ) {
+      hide();
+    }
+  };
+
+  useEffect(() => {
+    document.addEventListener("mousedown", handleOutsideClick);
+    return () => {
+      document.removeEventListener("mousedown", handleOutsideClick);
+    };
+  });
+
+  return { isVisible, show, hide, buttonRef, subMenuRef };
+};
+
 const Header = () => {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
-  const [showAccountMgr, setShowAccountMgr] = useState(false);
-  const accountButtonRef = useRef(null);
-  const accountSubMenuRef = useRef(null);
-
-  const [showGenres, setShowGenres] = useState(false);
+  const [isAdmin, setIsAdmin] = useState(false);
   const [genres, setGenres] = useState([]);
-  const genresButtonRef = useRef(null);
-  const subMenuRef = useRef(null);
+
+  const genresDropdown = useDropdownVisibility();
+  const adminDropdown = useDropdownVisibility();
+  const accountDropdown = useDropdownVisibility();
 
   const navigate = useNavigate();
 
@@ -20,11 +47,10 @@ const Header = () => {
     const token = localStorage.getItem("authToken");
     setIsLoggedIn(!!token);
 
+    const roleId = localStorage.getItem("roleId");
+    setIsAdmin(!!roleId ? roleId === "1" : false);
+
     getGenres();
-    document.addEventListener("mousedown", handleOutsideClick);
-    return () => {
-      document.removeEventListener("mousedown", handleOutsideClick);
-    };
   }, []);
 
   const getGenres = async () => {
@@ -36,42 +62,6 @@ const Header = () => {
     }
   };
 
-  const handleOutsideClick = (event) => {
-    if (
-      genresButtonRef.current &&
-      !genresButtonRef.current.contains(event.target) &&
-      subMenuRef.current &&
-      !subMenuRef.current.contains(event.target)
-    ) {
-      setShowGenres(false);
-    }
-
-    if (
-      accountButtonRef.current &&
-      !accountButtonRef.current.contains(event.target) &&
-      accountSubMenuRef.current &&
-      !accountSubMenuRef.current.contains(event.target)
-    ) {
-      setShowAccountMgr(false);
-    }
-  };
-
-  const handleMouseEnterGenres = () => {
-    setShowGenres(true);
-  };
-
-  const handleMouseLeaveGenres = () => {
-    setShowGenres(false);
-  };
-
-  const handleMouseEnterAccountMgr = () => {
-    setShowAccountMgr(true);
-  };
-
-  const handleMouseLeaveAccountMgr = () => {
-    setShowAccountMgr(false);
-  };
-
   const handleFindClick = () => {
     navigate("/#");
   };
@@ -79,6 +69,7 @@ const Header = () => {
   const handleLogout = () => {
     if (window.confirm("Are you sure you want to log out?")) {
       localStorage.removeItem("authToken");
+      localStorage.removeItem("roleId");
       setIsLoggedIn(false);
     }
   };
@@ -100,13 +91,13 @@ const Header = () => {
       <div className="nav-bar">
         <ul>
           <li
-            onMouseEnter={handleMouseEnterGenres}
-            onMouseLeave={handleMouseLeaveGenres}
-            ref={genresButtonRef}
+            onMouseEnter={genresDropdown.show}
+            onMouseLeave={genresDropdown.hide}
+            ref={genresDropdown.buttonRef}
           >
             <Link to="#">Thể loại</Link>
-            {showGenres && (
-              <ul className="sub-menu" ref={subMenuRef}>
+            {genresDropdown.isVisible && (
+              <ul className="sub-menu" ref={genresDropdown.subMenuRef}>
                 {genres.map((genre) => (
                   <li key={genre.GenreID}>
                     <Link
@@ -121,39 +112,61 @@ const Header = () => {
             )}
           </li>
 
-          <li>
-            <Link to="#">Khác</Link>
-          </li>
+          {isAdmin ? (
+            <li
+              onMouseEnter={adminDropdown.show}
+              onMouseLeave={adminDropdown.hide}
+              ref={adminDropdown.buttonRef}
+            >
+              <Link to="#">Quản lý</Link>
+              {adminDropdown.isVisible && (
+                <ul className="account-sub-menu" ref={adminDropdown.subMenuRef}>
+                  <li>
+                    <Link to="/upload-manga">Đăng truyện</Link>
+                  </li>
+                  <li>
+                    <Link to="#">Hướng dẫn</Link>
+                  </li>
+                  <li>
+                    <Link to="#">Quy định</Link>
+                  </li>
+                </ul>
+              )}
+            </li>
+          ) : (
+            <li></li>
+          )}
 
           {isLoggedIn ? (
             <li
-              onMouseEnter={handleMouseEnterAccountMgr}
-              onMouseLeave={handleMouseLeaveAccountMgr}
-              ref={accountButtonRef}
+              onMouseEnter={accountDropdown.show}
+              onMouseLeave={accountDropdown.hide}
+              ref={accountDropdown.buttonRef}
             >
-              <Link to="#">
-                Tài khoản
-              </Link>
-              {showAccountMgr && (
-                <ul className="account-sub-menu" ref={accountSubMenuRef}>
+              <Link to="#">Tài khoản</Link>
+              {accountDropdown.isVisible && (
+                <ul
+                  className="account-sub-menu"
+                  ref={accountDropdown.subMenuRef}
+                >
                   <li>
                     <Link to="/account">Thông tin</Link>
                   </li>
-                  <li >
+                  <li>
                     <Link to="/like-list">Yêu thích</Link>
                   </li>
                   <li>
                     <Link to="/follow-list">Theo dõi</Link>
                   </li>
                   <li onClick={handleLogout}>
-                    <Link to="/">Logout</Link>
+                    <Link to="/">Đăng xuất</Link>
                   </li>
                 </ul>
               )}
             </li>
           ) : (
             <li>
-              <Link to="/login">Đăng nhập/Đăng ký</Link>
+              <Link to="/login">Đăng nhập</Link>
             </li>
           )}
         </ul>

@@ -11,8 +11,8 @@ const controller = require('../app/controllers/AdminController.js');
 
 
 router.post('/upload-manga'
-            , validation.validUploadMangaBody
             , upload.single('coverImage')
+            , validation.validUploadMangaBody
             , controller.uploadManga);
 router.delete('/remove-manga/:mangaId', controller.removeManga);
 
@@ -20,8 +20,8 @@ router.put('/hide-manga/:mangaId', controller.hideManga);
 router.put('/unhide-manga/:mangaId', controller.unhideManga);
 
 router.post('/upload-chapter/:mangaId'
-            , validation.validUploadChapterBody
             , upload.array('chapterImages')
+            , validation.validUploadChapterBody
             , controller.uploadChapter);
 
 

@@ -2,8 +2,6 @@ const { uploadImage } = require("../services/UploadFirebaseService.js");
 const adminService = require('../services/AdminService.js');
 
 class AdminController {
-    
-
     // [POST] /admin/upload-manga
     async uploadManga(req, res) {
         try {
@@ -19,7 +17,7 @@ class AdminController {
             const result = await adminService.addManga(mangaName, author, coverImageUrl, description, ageLimit, accountId);
 
             if(result && result.code == adminService.SUCCESS_CODE) {
-                res.status(200).json({ message: result.message });
+                res.status(201).json({ message: result.message });
                 return;
             }
         } catch (error) {
@@ -115,7 +113,7 @@ class AdminController {
             const listImage = [];
             for (let i = 0; i < req.files.length; i++) {
                 const file = req.files[i];
-                const folderName = `chapter_images/${mangaId}/${chapterName}`;
+                const folderName = `chapter_images/${mangaId}/${result.chapterId}`;
                 const filename = `${Date.now()}-${file.originalname}`;
 
                 const publicUrl = await uploadImage(
@@ -130,7 +128,7 @@ class AdminController {
             result = await adminService.addChapterImages(listImage, result.chapterId);
             
             if(result && result.code == adminService.SUCCESS_CODE) {
-                res.status(200).json({ message: result.message });
+                res.status(201).json({ message: result.message });
                 return;
             }
         } catch (error) {
