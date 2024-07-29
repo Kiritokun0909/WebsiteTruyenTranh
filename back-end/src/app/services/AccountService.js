@@ -69,6 +69,49 @@ module.exports.changePassword = async (accountId, newPassword) => {
 }
 
 
+module.exports.isLike = async (accountId, mangaId) => {
+    try {
+        const [row] = await db.query(`
+            SELECT AccountID
+            FROM \`like\` 
+            WHERE 
+                AccountID = ? AND MangaID = ?;
+        `, [accountId, mangaId]);
+
+        if (row.length === 0) {
+            return { code: FAILED, message: 'AccountId=' + accountId + ' does not like MangaId='+ mangaId + '.' };
+        }
+
+        return { code: SUCCESS, message: 'AccountId=' + accountId + ' likes MangaId='+ mangaId + '.' };
+
+    } catch (err) {
+        console.error('Failed to query is like manga:', err);
+        throw err;
+    }
+}
+
+module.exports.isFollow = async (accountId, mangaId) => {
+    try {
+        const [row] = await db.query(`
+            SELECT AccountID
+            FROM \`follow\` 
+            WHERE 
+                AccountID = ? AND MangaID = ?;
+        `, [accountId, mangaId]);
+
+        if (row.length === 0) {
+            return { code: FAILED, message: 'AccountId=' + accountId + ' does not follow MangaId='+ mangaId + '.' };
+        }
+
+        return { code: SUCCESS, message: 'AccountId=' + accountId + ' follows MangaId='+ mangaId + '.' };
+
+    } catch (err) {
+        console.error('Failed to query is follow manga:', err);
+        throw err;
+    }
+}
+
+
 module.exports.likeManga = async (accountId, mangaId) => {
     try {
         const query = `INSERT INTO \`like\` (AccountID, MangaID) VALUES (?, ?);`;

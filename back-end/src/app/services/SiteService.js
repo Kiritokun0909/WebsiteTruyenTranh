@@ -120,7 +120,13 @@ const formatDate = (dateString) => {
 module.exports.getManga = async (mangaId) => {
     try {
         const [mangaRow] = await db.query(
-            'SELECT * FROM manga WHERE MangaID = ?', 
+            `SELECT 
+                MangaId, StoryName, AuthorName, CoverImageUrl, AgeLimit
+                , Description, NumViews, NumLikes, NumFollows   
+            FROM 
+                manga 
+            WHERE 
+                MangaID = ?`, 
             [mangaId]
         );
 
@@ -228,3 +234,96 @@ module.exports.getChapter = async (chapterId) => {
         throw err;
     }
 };
+
+
+module.exports.getMangaComment = async (mangaId = 1, pageNumber = 1, itemsPerPage = 5) => {
+    try {
+        const [totalRows] = await db.query(
+            `SELECT COUNT(MangaID) as total 
+            FROM commentmanga 
+            WHERE MangaID= ?;`
+            , [mangaId]
+        );
+        const totalComments = totalRows[0].total;
+
+        const totalPages = Math.ceil(totalComments / itemsPerPage);
+        if (pageNumber > totalPages) {
+            return { 
+                pageNumber,
+                totalPages, 
+                comments: []
+            };
+        }
+
+        const offset = (pageNumber - 1) * itemsPerPage;
+        const [rows] = await db.query(
+            `
+            SELECT 
+                a.username, cm.context, cm.commentDate
+            FROM 
+                commentmanga cm
+	            JOIN account a on a.AccountID = cm.AccountID
+            WHERE 
+                cm.MangaID = ?
+            ORDER BY 
+                cm.CommentDate DESC
+            LIMIT ? OFFSET ?;`,
+            [mangaId, itemsPerPage, offset]
+        );
+
+        return {
+            pageNumber,
+            totalPages,
+            comments: rows
+        };
+    } catch (err) {
+        console.error('Failed to connect to the database\n', err);
+        throw err;
+    }
+}
+
+module.exports.getChapterComment = async (chapterId = 1, pageNumber = 1, itemsPerPage = 5) => {
+    try {
+        const [totalRows] = await db.query(
+            `SELECT COUNT(ChapterID) as total 
+            FROM commentchapter 
+            WHERE ChapterID= ?;`
+            , [chapterId]
+        );
+        const totalComments = totalRows[0].total;
+
+        const totalPages = Math.ceil(totalComments / itemsPerPage);
+        if (pageNumber > totalPages) {
+            return { 
+                pageNumber,
+                totalPages, 
+                comments: []
+            };
+        }
+
+        const offset = (pageNumber - 1) * itemsPerPage;
+        const [rows] = await db.query(
+            `
+            SELECT 
+                a.username, cm.context, cm.commentDate
+            FROM 
+                commentchapter cm
+	            JOIN account a on a.AccountID = cm.AccountID
+            WHERE 
+                cm.ChapterID = ?
+            ORDER BY 
+                cm.CommentDate DESC
+            LIMIT ? OFFSET ?;`,
+            [chapterId, itemsPerPage, offset]
+        );
+
+        return {
+            pageNumber,
+            totalPages,
+            comments: rows
+        };
+    } catch (err) {
+        console.error('Failed to connect to the database\n', err);
+        throw err;
+    }
+}

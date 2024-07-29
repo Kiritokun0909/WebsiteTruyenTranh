@@ -114,3 +114,112 @@ export const updatePassword = async (password) => {
     console.error("Error update password", error);
   }
 };
+
+export const getLikeStatus = async (mangaId) => {
+  try {
+    const token = localStorage.getItem("authToken");
+
+    const apiURL = "/account/is-like/" + mangaId;
+
+    const response = await fetch(apiURL, {
+      method: "GET",
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+
+    const message = await response.json();
+    return { code: response.status, message: message };
+  } catch (error) {
+    console.error("Error fetching list like manga:", error);
+  }
+}
+
+export const getFollowStatus = async (mangaId) => {
+  try {
+    const token = localStorage.getItem("authToken");
+
+    const apiURL = "/account/is-follow/" + mangaId;
+
+    const response = await fetch(apiURL, {
+      method: "GET",
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+
+    const message = await response.json();
+    return { code: response.status, message: message };
+  } catch (error) {
+    console.error("Error fetching list like manga:", error);
+  }
+}
+
+export const likeManga = async (mangaId, isLike = false) => {
+  try {
+    const token = localStorage.getItem("authToken");
+
+    const apiURL = "/account"
+      + (isLike ? "/like-manga/" : "/unlike-manga/")
+      + mangaId
+    ;
+
+    const response = await fetch(apiURL, {
+      method: "POST",
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+
+    const message = await response.json();
+    return { code: response.status, message: message };
+  } catch (error) {
+    console.error("Error fetching list like manga:", error);
+  }
+}
+
+export const followManga = async (mangaId, isFollow = false) => {
+  try {
+    const token = localStorage.getItem("authToken");
+
+    const apiURL = "/account"
+      + (isFollow ? "/follow-manga/" : "/unfollow-manga/")
+      + mangaId
+    ;
+
+    const response = await fetch(apiURL, {
+      method: "POST",
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+
+    const message = await response.json();
+    return { code: response.status, message: message };
+  } catch (error) {
+    console.error("Error fetching list like manga:", error);
+  }
+}
+
+
+export const commentManga = async (mangaId, context) => {
+  try {
+    const token = localStorage.getItem("authToken");
+
+    const response = await fetch("/account/comment-manga/" + mangaId, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+      body: JSON.stringify({ context: context }),
+    });
+
+    if (!response.ok) {
+      throw new Error("Failed to comment manga");
+    }
+    return await response.json();
+  } catch (error) {
+    console.error("Error comment manga:", error);
+  }
+}

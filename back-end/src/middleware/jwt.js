@@ -4,7 +4,7 @@ const JWT_SECRET_KEY = require('../configs/JWTSecretKey.js');
 
 const generateToken = (userId, roleId) => {
   // return jwt.sign({ id: userId, role: roleId }, JWT_SECRET_KEY, { expiresIn: '20s' });
-  return jwt.sign({ id: userId, role: roleId }, JWT_SECRET_KEY, { expiresIn: '1h' });
+  return jwt.sign({ id: userId, role: roleId }, JWT_SECRET_KEY, { expiresIn: '1d' });
 };
 
 

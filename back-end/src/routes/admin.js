@@ -24,5 +24,4 @@ router.post('/upload-chapter/:mangaId'
             , validation.validUploadChapterBody
             , controller.uploadChapter);
 
-
 module.exports = router;

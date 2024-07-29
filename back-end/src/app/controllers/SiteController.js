@@ -125,6 +125,53 @@ class SiteController {
         } catch (err) { }
         res.status(HTTP_STATUS.NOT_FOUND).json({ error: 'Failed to get chapter.' });
     }
+
+    // [GET] /manga/{mangaId}/comment/{pageNumber}
+    async getMangaComment(req, res){
+        const mangaId = parseInt(req.params.mangaId, 10);
+        const pageNumber = parseInt(req.params.pageNumber, 10);;
+
+        if (isNaN(mangaId) || mangaId < 1) {
+            res.status(400).json({ error: 'Invalid mangaId' });
+            return;
+        }
+
+        if (isNaN(pageNumber) || pageNumber < 1) {
+            res.status(400).json({ error: 'Invalid pageNumber' });
+            return;
+        }
+
+        try {
+            const result = await siteService.getMangaComment(mangaId, pageNumber, HANDLE_CODE.NUM_OF_COMMENT_PER_PAGE);
+            res.status(200).json(result);
+            return;
+        } catch (err) { }
+        res.status(404).json({ error: 'Failed to get manga comments.' });
+    }
+
+    // [GET] /manga/{chapterId}/comment/{pageNumber}
+    async getChapterComment(req, res){
+        const chapterId = parseInt(req.params.chapterId, 10);
+        const pageNumber = parseInt(req.params.pageNumber, 10);;
+
+        if (isNaN(chapterId) || chapterId < 1) {
+            res.status(400).json({ error: 'Invalid mangaId' });
+            return;
+        }
+
+        if (isNaN(pageNumber) || pageNumber < 1) {
+            res.status(400).json({ error: 'Invalid pageNumber' });
+            return;
+        }
+
+        try {
+            const result = await siteService.getChapterComment(chapterId, pageNumber, HANDLE_CODE.NUM_OF_COMMENT_PER_PAGE);
+            res.status(200).json(result);
+            return;
+        } catch (err) { }
+        res.status(404).json({ error: 'Failed to get manga comments.' });
+    }
+
 }
 
 module.exports = new SiteController;

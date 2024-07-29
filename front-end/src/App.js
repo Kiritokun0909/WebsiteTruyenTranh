@@ -37,7 +37,7 @@ function App() {
           <Route path="/" element={genreId ? <GenrePage /> : <HomePage />} />
           <Route path="/privacy" element={<Privacy />} />
           <Route path="/login" element={<LoginPage />} />
-          <Route path="/manga/:id" element={<Manga />} />
+          <Route path="/manga/:mangaId" element={<Manga />} />
           <Route path="/chapter/:id" element={<Chapter />} />
 
 

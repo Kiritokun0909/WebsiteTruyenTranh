@@ -56,6 +56,63 @@ class AccountController {
         }
     }
 
+    // [POST] /account/is-like/{mangaId}
+    async isLike(req, res) {
+        const accountId  = req.user.id;
+        const mangaId = parseInt(req.params.mangaId, 10);
+
+        if (isNaN(mangaId) || mangaId < 1) {
+            res.status(400).json({ error: 'Invalid MangaId' });
+            return;
+        }
+
+        try {
+            const result = await accountService.isLike(accountId, mangaId);
+
+            if(result && result.code == accountService.FAILED_CODE) {
+                res.status(400).json({ message: result.message });
+                return;
+            }
+            
+            if(result && result.code == accountService.SUCCESS_CODE) {
+                res.status(200).json({ message: result.message });
+                return;
+            }
+
+        } catch (err) {
+            console.log(err);
+            res.status(500).json({ message: 'Failed to get is like manga.' });
+        }
+    }
+
+    // [POST] /account/is-follow/{mangaId}
+    async isFollow(req, res) {
+        const accountId  = req.user.id;
+        const mangaId = parseInt(req.params.mangaId, 10);
+
+        if (isNaN(mangaId) || mangaId < 1) {
+            res.status(400).json({ error: 'Invalid MangaId' });
+            return;
+        }
+
+        try {
+            const result = await accountService.isFollow(accountId, mangaId);
+
+            if(result && result.code == accountService.FAILED_CODE) {
+                res.status(400).json({ message: result.message });
+                return;
+            }
+            
+            if(result && result.code == accountService.SUCCESS_CODE) {
+                res.status(200).json({ message: result.message });
+                return;
+            }
+
+        } catch (err) {
+            console.log(err);
+            res.status(500).json({ message: 'Failed to get is like manga.' });
+        }
+    }
 
     // [POST] /account/like-manga/{mangaId}
     async like(req, res) {

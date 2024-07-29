@@ -14,6 +14,9 @@ router.put('/update-password'
             , validation.validUpdatePasswordBody 
             , controller.changePassword);
 
+router.use('/is-like/:mangaId', controller.isLike);
+router.use('/is-follow/:mangaId', controller.isFollow);
+
 router.post('/like-manga/:mangaId', controller.like);
 router.post('/unlike-manga/:mangaId', controller.unlike);
 
