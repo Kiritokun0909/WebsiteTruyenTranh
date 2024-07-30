@@ -1,10 +1,12 @@
 import React, { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import "../../styles/UploadManga.css";
-import { uploadManga } from "../../api/AdminService.js";
-import { fetchGenres } from "../../api/SiteService";
+import { fetchGenres, fetchManga } from "../../api/SiteService";
+import { updateManga } from "../../api/AdminService";
 
-const UploadMangaPage = () => {
+const UpdateMangaPage = () => {
+  const { mangaId } = useParams();
+
   const [mangaName, setMangaName] = useState("");
   const [author, setAuthor] = useState("");
   const [ageLimit, setAgeLimit] = useState(0);
@@ -17,17 +19,37 @@ const UploadMangaPage = () => {
   const navigate = useNavigate();
 
   useEffect(() => {
+    const getManga = async () => {
+      try {
+        const data = await fetchManga(mangaId);
+        const manga = data.manga[0];
+        const listGenre = data.genres;
+
+        setMangaName(manga.StoryName);
+        setAuthor(manga.AuthorName);
+        setAgeLimit(manga.AgeLimit);
+        setDescription(manga.Description);;
+        setPreviewCoverImage(manga.CoverImageUrl);
+
+        const ids = listGenre.map(genre => String(genre.GenreID));
+        setSelectedGenres(ids);
+      } catch (error) {
+        console.error("Error getting manga:", error);
+      }
+    };
+
     const getGenres = async () => {
       try {
         const data = await fetchGenres();
         setGenres(data.genres);
       } catch (error) {
-        console.error("Error get list genre:", error);
+        console.error("Error getting list of genres:", error);
       }
     };
 
     getGenres();
-  }, []);
+    getManga();
+  }, [mangaId]);
 
   const handleImageChange = (e) => {
     const file = e.target.files[0];
@@ -37,12 +59,18 @@ const UploadMangaPage = () => {
 
   const handleSubmit = async (event) => {
     event.preventDefault();
-    const response = await uploadManga(coverImage, mangaName, author
+
+    // Remove duplicates
+    const uniqueIds = [...new Set(selectedGenres.map(id => String(id)))];
+    setSelectedGenres(uniqueIds);
+
+    // console.log('submit selected genres: ', selectedGenres);
+    const response = await updateManga(mangaId, coverImage, mangaName, author
       , ageLimit, description, selectedGenres);
     
-    if (response.code === 201){
-      alert("Thêm manga mới thành công.");
-      navigate("/");
+    if (response.code === 200){
+      alert("Cập nhật manga thành công.");
+      navigate("/manga/" + mangaId);
     }
     else{
       alert("Đã có lỗi xảy ra vui lòng thử lại sau.");
@@ -51,6 +79,7 @@ const UploadMangaPage = () => {
 
   const handleGenreChange = (e) => {
     const { value, checked } = e.target;
+
     setSelectedGenres((prevSelectedGenres) =>
       checked
         ? [...prevSelectedGenres, value]
@@ -64,11 +93,9 @@ const UploadMangaPage = () => {
         <div>
           <label>Ảnh bìa:</label>
           <input type="file" onChange={handleImageChange} />
-          {previewCoverImage && (
-            <div className="image-preview">
+          <div className="image-preview">
               <img src={previewCoverImage} alt="Ảnh bìa" />
             </div>
-          )}
         </div>
 
         <div>
@@ -115,6 +142,7 @@ const UploadMangaPage = () => {
                   <input
                     type="checkbox"
                     value={genre.GenreID}
+                    checked={selectedGenres.includes(String(genre.GenreID))}
                     onChange={handleGenreChange}
                   />
                   {genre.GenreName}
@@ -124,10 +152,10 @@ const UploadMangaPage = () => {
           </div>
         </div>
 
-        <button type="submit">Đăng truyện</button>
+        <button type="submit">Cập nhật truyện</button>
       </form>
     </div>
   );
 };
 
-export default UploadMangaPage;
+export default UpdateMangaPage;

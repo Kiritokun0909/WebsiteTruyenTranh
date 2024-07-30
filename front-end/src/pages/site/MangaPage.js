@@ -28,7 +28,7 @@ const Manga = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
   const [comments, setComments] = useState([]);
-  const [newComment, setNewComment] = useState('');
+  const [newComment, setNewComment] = useState("");
 
   useEffect(() => {
     const getManga = async () => {
@@ -78,8 +78,6 @@ const Manga = () => {
     getManga();
     getComments(currentPage);
   }, [mangaId, isLoggedIn, currentPage]);
-
-  
 
   const handleLikeClick = async () => {
     try {
@@ -179,9 +177,17 @@ const Manga = () => {
 
               {isAdmin ? (
                 <div className="btn-admin">
-                  <NavLink to={`/upload-chapter/${mangaItem.MangaId}`}>
-                    Đăng chương mới
-                  </NavLink>
+                  <div>
+                    <NavLink to={`/update-manga/${mangaItem.MangaId}`}>
+                      Cập nhật thông tin truyện
+                    </NavLink>
+                  </div>
+
+                  <div>
+                    <NavLink to={`/upload-chapter/${mangaItem.MangaId}`}>
+                      Đăng chương mới
+                    </NavLink>
+                  </div>
                 </div>
               ) : (
                 <div></div>

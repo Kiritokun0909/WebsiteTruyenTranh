@@ -1,6 +1,6 @@
 export const uploadManga = async (
-  coverImage, mangaName, 
-  author, ageLimit, description
+  coverImage, mangaName, author, 
+  ageLimit, description, selectedGenres
 ) => {
   try {
     const token = localStorage.getItem("authToken");
@@ -10,6 +10,11 @@ export const uploadManga = async (
     formData.append("author", author);
     formData.append("ageLimit", ageLimit);
     formData.append("description", description);
+    selectedGenres.forEach((genre) => {
+      if (!genre) { return; }
+      formData.append('selectedGenres', genre);
+    });
+
 
     const response = await fetch("/admin/upload-manga", {
       method: "POST",
@@ -19,10 +24,46 @@ export const uploadManga = async (
       body: formData,
     });
 
-    if (!response.ok) {
-      throw new Error("Failed to upload manga");
+    const message = await response.json();
+    return { code: response.status, message: message };
+  } catch (error) {
+    console.error("Error upload manga:", error);
+  }
+};
+
+export const updateManga = async (
+  mangaId, coverImage, mangaName, author, 
+  ageLimit, description, selectedGenres
+) => {
+  try {
+    const token = localStorage.getItem("authToken");
+    const formData = new FormData();
+    formData.append('mangaId', mangaId);
+    formData.append('mangaName', mangaName);
+    formData.append('author', author);
+    formData.append('ageLimit', ageLimit);
+    formData.append('description', description);
+    
+    if (coverImage) {
+      formData.append('coverImage', coverImage);
     }
-    return await response.json();
+
+    selectedGenres.forEach((genre) => {
+      if (!genre) { return; }
+      formData.append('selectedGenres', genre);
+    });
+
+
+    const response = await fetch("/admin/update-manga", {
+      method: "PUT",
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+      body: formData,
+    });
+
+    const message = await response.json();
+    return { code: response.status, message: message };
   } catch (error) {
     console.error("Error upload manga:", error);
   }
@@ -32,6 +73,7 @@ export const uploadManga = async (
 export const uploadChapter = async (mangaId, chapterName, chapterImages) => {
   try {
     const token = localStorage.getItem("authToken");
+
     const formData = new FormData();
     formData.append("chapterName", chapterName);
     console.log(chapterImages);
@@ -49,7 +91,6 @@ export const uploadChapter = async (mangaId, chapterName, chapterImages) => {
     });
 
     const message = await response.json();
-    console.log(response.status);
     return { code: response.status, message: message };
   } catch (error) {
     console.error("Error upload chapter:", error);

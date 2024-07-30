@@ -1,15 +1,30 @@
-import React, { useState } from 'react';
-import { useParams, useNavigate } from 'react-router-dom';
-import '../../styles/UploadManga.css';
+import React, { useState, useEffect } from "react";
+import { useParams, useNavigate } from "react-router-dom";
+import "../../styles/UploadManga.css";
 import { uploadChapter } from "../../api/AdminService.js";
+import { fetchManga } from "../../api/SiteService.js";
 
 const UploadChapterPage = () => {
   const { mangaId } = useParams();
-  const [chapterName, setChapterName] = useState('');
+  const [manga, setManga] = useState([]);
+
+  const [chapterName, setChapterName] = useState("");
   const [images, setImages] = useState([]);
   const [previews, setPreviews] = useState([]);
 
   const navigate = useNavigate();
+
+  useEffect(() => {
+    const getManga = async () => {
+      try {
+        const data = await fetchManga(mangaId);
+        setManga(data.manga);
+      } catch (error) {
+        console.error("Error getting manga:", error);
+      }
+    };
+    getManga();
+  }, [mangaId]);
 
   const handleImageChange = (e, index) => {
     const files = [...images];
@@ -28,31 +43,60 @@ const UploadChapterPage = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-
     try {
       const response = await uploadChapter(mangaId, chapterName, images);
 
-      if (response.code === 201){
+      if (response.code === 201) {
         alert("Thêm chương mới thành công.");
         navigate("/");
-      }
-      else{
+      } else {
         alert("Đã có lỗi xảy ra vui lòng thử lại sau.");
       }
     } catch (error) {
-      console.error('Error:', error);
+      console.error("Error:", error);
     }
   };
 
   return (
     <div>
       <form onSubmit={handleSubmit} encType="multipart/form-data">
-      <div>
-          <label>MangaId: {mangaId}</label>
+        <div>
+        {manga.map((mangaItem) => (
+          <div key={mangaItem.MangaId} className="manga-info">
+            <div className="manga-cover">
+              <img
+                src={mangaItem.CoverImageUrl}
+                alt={mangaItem.StoryName}
+                className="manga-cover"
+              />
+            </div>
+
+            <div className="manga-info-detail">
+              <h4>{mangaItem.StoryName}</h4>
+              <div className="list-info">
+                <p>
+                  <strong>Tác giả:</strong> {mangaItem.AuthorName}
+                </p>
+                <p>
+                  <strong>Độ tuổi:</strong> {mangaItem.AgeLimit}+
+                </p>
+                <p>
+                  <strong>Lượt xem:</strong> {mangaItem.NumViews}
+                </p>
+                <p>
+                  <strong>Lượt theo dõi:</strong> {mangaItem.NumFollows}
+                </p>
+                <p>
+                  <strong>Lượt yêu thích:</strong> {mangaItem.NumLikes}
+                </p>
+              </div>
+            </div>
+          </div>
+        ))}
         </div>
 
         <div>
-          <label>Tên chapter:</label>
+          <label>Tên chapter mới:</label>
           <input
             type="text"
             value={chapterName}
@@ -62,11 +106,8 @@ const UploadChapterPage = () => {
 
         {images.map((image, index) => (
           <div key={index}>
-            <label>Image {index + 1}:</label>
-            <input
-              type="file"
-              onChange={(e) => handleImageChange(e, index)}
-            />
+            <label>Ảnh {index + 1}:</label>
+            <input type="file" onChange={(e) => handleImageChange(e, index)} />
             {previews[index] && (
               <div className="image-preview">
                 <img src={previews[index]} alt={`Preview ${index + 1}`} />

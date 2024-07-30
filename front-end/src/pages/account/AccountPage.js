@@ -25,12 +25,6 @@ const AccountPage = () => {
     }
   };
 
-  // const addImageField = () => {
-  //   setImages([...images, null]);
-  //   setOrderNumbers([...orderNumbers, images.length + 1]);
-  //   setPreviews([...previews, null]);
-  // };
-
   const handleChangeUsername = async (event) => {
     await updateUsername(username);
     window.location.reload();
