@@ -1,5 +1,5 @@
 module.exports.validUploadMangaBody = (req, res, next) => {
-    const { mangaName, author, ageLimit, description } = req.body;
+    const { mangaName, author, ageLimit, description, genres } = req.body;
     
     if (!mangaName || !author || !ageLimit || !description) {
         return res.status(400).json({ 

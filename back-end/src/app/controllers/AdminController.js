@@ -6,7 +6,7 @@ class AdminController {
     async uploadManga(req, res) {
         try {
             const accountId  = req.user.id;
-            const { mangaName, author, ageLimit, description } = req.body;
+            const { mangaName, author, ageLimit, description, selectedGenres } = req.body;
             
             const coverImage = req.file;
             const folderName = `manga_cover_images/${mangaName}`;
@@ -14,7 +14,7 @@ class AdminController {
 
             const coverImageUrl = await uploadImage(coverImage.buffer, folderName, filename, coverImage.mimetype);
 
-            const result = await adminService.addManga(mangaName, author, coverImageUrl, description, ageLimit, accountId);
+            const result = await adminService.addManga(mangaName, author, coverImageUrl, description, ageLimit, selectedGenres, accountId);
 
             if(result && result.code == adminService.SUCCESS_CODE) {
                 res.status(201).json({ message: result.message });
@@ -25,6 +25,36 @@ class AdminController {
             res.status(500).json({ message: "Failed to add manga." });
         }
     }
+
+    // [PUT] /admin/update-manga
+    async updateManga (req, res) {
+        try {
+            const { mangaId, mangaName, author, ageLimit, description, selectedGenres } = req.body;
+            let coverImageUrl = '';
+    
+            // Check if a new cover image is uploaded
+            if (req.file) {
+                const coverImage = req.file;
+                const folderName = `manga_cover_images/${mangaId}`;
+                const filename = `${Date.now()}-${coverImage.originalname}`;
+
+                coverImageUrl = await uploadImage(coverImage.buffer, folderName, filename, coverImage.mimetype);
+            }
+            else {
+                console.log('No file upload.');
+            }
+    
+            const result = await adminService.updateManga(mangaId, mangaName, author, coverImageUrl, description, ageLimit, selectedGenres);
+            if(result && result.code == adminService.SUCCESS_CODE) {
+                res.status(200).json({ message: result.message });
+                return;
+            }
+        } catch (err) {
+            console.error('Error updating manga:', err);
+            res.status(500).json({ message: 'Failed to update manga.' });
+        }
+    }
+    
 
     // [DELETE] /admin/remove-manga/{mangaId}
     async removeManga(req, res) {

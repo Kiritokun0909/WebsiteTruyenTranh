@@ -9,9 +9,9 @@ module.exports = {
 
 const db = require('../../configs/DatabaseConfig.js');
 
-module.exports.addManga = async (mangaName, authorName, coverImageUrl, description, ageLimit, accountId) => {
+module.exports.addManga = async (mangaName, authorName, coverImageUrl, description, ageLimit, genres, accountId) => {
     try {
-        const query = `
+        const [insertRow] = await db.query(`
             INSERT INTO manga(
                 \`StoryName\`,
                 \`AuthorName\`,
@@ -20,9 +20,17 @@ module.exports.addManga = async (mangaName, authorName, coverImageUrl, descripti
                 \`AgeLimit\`,
                 \`AccountID\`
             ) VALUES(?, ?, ?, ?, ?, ?);
-        `;
-        const values = [mangaName, authorName, coverImageUrl, description, ageLimit, accountId];
-        const [result] = await db.query(query, values);
+        `, [mangaName, authorName, coverImageUrl, description, ageLimit, accountId]);
+
+        const mangaId = insertRow.insertId;
+
+        if (genres && genres.length > 0) {
+            for (const genreId of genres) {
+                await db.query(`
+                    INSERT INTO mangagenre(GenreID, MangaID) VALUES (?, ?)
+                `, [genreId, mangaId]);
+            }
+        }
 
         return { code: SUCCESS, message: 'Add new manga successfully.' };;
     } catch (err) {
@@ -30,6 +38,45 @@ module.exports.addManga = async (mangaName, authorName, coverImageUrl, descripti
         throw err;
     }
 }
+
+module.exports.updateManga = async (mangaId, mangaName, authorName, coverImageUrl, description, ageLimit, genres) => {
+    try {
+        let query = `
+            UPDATE manga
+            SET StoryName = ?, AuthorName = ?, Description = ?, AgeLimit = ?
+        `;
+        let params = [mangaName, authorName, description, ageLimit, mangaId];
+
+        if (coverImageUrl != '') {
+            query = `
+                UPDATE manga
+                SET StoryName = ?, AuthorName = ?, CoverImageUrl = ?, Description = ?, AgeLimit = ?
+            `;
+            params = [mangaName, authorName, coverImageUrl, description, ageLimit, mangaId];
+        }
+
+        query += ' WHERE MangaID = ?;';
+        await db.query(query, params);
+
+        await db.query(`
+            DELETE FROM mangagenre WHERE MangaID = ?;
+        `, [mangaId]);
+
+        if (genres && genres.length > 0) {
+            for (const genreId of genres) {
+                await db.query(`
+                    INSERT INTO mangagenre(GenreID, MangaID) VALUES (?, ?)
+                `, [genreId, mangaId]);
+            }
+        }
+
+        return { code: SUCCESS, message: 'Manga updated successfully.' };
+    } catch (err) {
+        console.error('Failed to update manga:', err);
+        throw err;
+    }
+}
+
 
 module.exports.setMangaHideStatus = async (mangaId, isHide = false) => {
     try {

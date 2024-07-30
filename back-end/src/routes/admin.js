@@ -14,6 +14,11 @@ router.post('/upload-manga'
             , upload.single('coverImage')
             , validation.validUploadMangaBody
             , controller.uploadManga);
+
+router.put('/update-manga'
+            , upload.single('coverImage')
+            , validation.validUploadMangaBody
+            , controller.updateManga);
 router.delete('/remove-manga/:mangaId', controller.removeManga);
 
 router.put('/hide-manga/:mangaId', controller.hideManga);
