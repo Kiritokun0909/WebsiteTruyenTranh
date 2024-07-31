@@ -3,9 +3,7 @@ import React from 'react';
 const Privacy = () => {
   return (
     <div>
-        <h1>Privacy Page</h1>
-
-       
+        <h1>Điều khoản dịch vụ</h1>
     </div>
   );
 };

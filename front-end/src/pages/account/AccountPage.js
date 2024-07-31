@@ -27,21 +27,23 @@ const AccountPage = () => {
 
   const handleChangeUsername = async (event) => {
     await updateUsername(username);
+    alert('Đổi username thành công.');
     window.location.reload();
   };
 
   const handleChangePassword = async (event) => {
     await updatePassword(password);
+    alert('Đổi mật khẩu thành công.');
     window.location.reload();
   };
 
   return (
     <div className="home-layout">
-      <div className="home-item__sidebar-one"></div>
-
-      <div className="home-item__main-column">
-        <h1>Thông tin tài khoản</h1>
-        <div className="change-username">
+      <div className="home-header">
+        <h3>Thông tin tài khoản</h3>
+      </div>
+      <div className="auth-container">
+        <div className="account-field">
           <label>Username:</label>
           <input
             type="text"
@@ -52,7 +54,7 @@ const AccountPage = () => {
             Đổi
           </button>
         </div>
-        <div className="change-password">
+        <div className="account-field">
           <label>Mật khẩu:</label>
           <input
             type="password"
@@ -64,8 +66,6 @@ const AccountPage = () => {
           </button>
         </div>
       </div>
-
-      <div className="home-item__sidebar-two"></div>
     </div>
   );
 };

@@ -1,36 +1,12 @@
 .home-layout {
   display: flex;
+  flex-direction: column;
 }
 
-.home-item__sidebar-one,
-.home-item__sidebar-two {
-  flex: 1;
-  display: block;
-  background-color: #ebebeb;
-}
-
-.home-item__main-column {
-  flex: 2;
-  background-color: white;
-  padding: 14px 0px;
-  border-radius: 4px;
+.home-header {
+  padding-top: 12px;
   text-align: center;
-  min-height: 80vh;
-}
-
-.home-item__main-column h1 {
-  margin-top: 4px;
-}
-
-@media (max-width: 1024px) {
-  .home-item__sidebar-one,
-  .home-item__sidebar-two {
-    display: none;
-  }
-
-  .home-item__main-column {
-    border-radius: 0px;
-  }
+  margin-bottom: 16px;
 }
 
 .manga-list {
@@ -49,17 +25,12 @@
   width: 150px;
   height: 200px;
   margin-bottom: 2px;
+  border-radius: 4px;
 }
 
 .manga-item a {
   text-decoration: none;
   color: black;
-}
-
-.manga-cover {
-  width: 100%;
-  height: auto;
-  border-radius: 5px;
 }
 
 #manga-name {

@@ -223,3 +223,25 @@ export const commentManga = async (mangaId, context) => {
     console.error("Error comment manga:", error);
   }
 }
+
+export const commentChapter = async (chapterId, context) => {
+  try {
+    const token = localStorage.getItem("authToken");
+
+    const response = await fetch("/account/comment-chapter/" + chapterId, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+      body: JSON.stringify({ context: context }),
+    });
+
+    if (!response.ok) {
+      throw new Error("Failed to comment chapter");
+    }
+    return await response.json();
+  } catch (error) {
+    console.error("Error comment chapter:", error);
+  }
+}

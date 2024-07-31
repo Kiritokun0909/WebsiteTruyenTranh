@@ -1,0 +1,22 @@
+.account-field {
+  margin-bottom: 12px;
+}
+
+.account-field label {
+  margin-right: 4px;
+}
+
+.account-field input {
+  padding: 2px 4px;
+  margin-right: 8px;
+}
+
+.account-field button {
+  /* border-radius: 4px; */
+  padding: 6px 12px;
+  background-color: #007bff;
+  color: white;
+  border: none;
+  border-radius: 0.5em;
+  transition: background-color 0.3s;
+}

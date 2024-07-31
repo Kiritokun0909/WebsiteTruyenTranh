@@ -53,62 +53,56 @@ const GenrePage = () => {
 
   return (
     <div className="home-layout">
-      <div className="home-item__sidebar-one"></div>
-
-      <div className="home-item__main-column">
-        <div className="genre-info">
-          <h3>
-            <NavLink to={`/`}>Home</NavLink> / {genreName}
-          </h3>
-        </div>
-
-        <div className="manga-list">
-          {mangas.map((manga) => (
-            <div key={manga.MangaID} className="manga-item">
-              <Link to={`/manga/${manga.MangaID}`}>
-                <img
-                  src={manga.CoverImageUrl}
-                  alt={manga.StoryName}
-                  className="manga-cover"
-                />
-              </Link>
-              <nav id="manga-name">
-                <NavLink to={`/manga/${manga.MangaID}`} title={manga.StoryName}>
-                  {manga.StoryName}
-                </NavLink>
-              </nav>
-              <nav id="chapter">
-                <NavLink to={`/manga/${manga.MangaID}/${manga.NumChapter}`}>
-                  {manga.NumChapter}
-                </NavLink>
-              </nav>
-            </div>
-          ))}
-        </div>
-
-        <div className="pagination">
-          <ReactPaginate
-            breakLabel="..."
-            nextLabel="Next"
-            previousLabel="Previous"
-            onPageChange={handlePageClick}
-            pageCount={totalPages}
-            forcePage={currentPage - 1}
-            pageClassName="page-item"
-            pageLinkClassName="page-link"
-            previousClassName="page-item"
-            previousLinkClassName="page-link"
-            nextClassName="page-item"
-            nextLinkClassName="page-link"
-            breakClassName="page-item"
-            breakLinkClassName="page-link"
-            containerClassName="pagination"
-            activeClassName="active"
-          />
-        </div>
+      <div className="genre-info">
+        <h5>
+          <NavLink to={`/`}>Trang chủ</NavLink>/Thể loại/{genreName}
+        </h5>
       </div>
 
-      <div className="home-item__sidebar-two"></div>
+      <div className="manga-list">
+        {mangas.map((manga) => (
+          <div key={manga.MangaID} className="manga-item">
+            <Link to={`/manga/${manga.MangaID}`}>
+              <img
+                src={manga.CoverImageUrl}
+                alt={manga.StoryName}
+                className="manga-cover"
+              />
+            </Link>
+            <nav id="manga-name">
+              <NavLink to={`/manga/${manga.MangaID}`} title={manga.StoryName}>
+                {manga.StoryName}
+              </NavLink>
+            </nav>
+            <nav id="chapter">
+              <NavLink to={`/manga/${manga.MangaID}/${manga.NumChapter}`}>
+                {manga.NumChapter}
+              </NavLink>
+            </nav>
+          </div>
+        ))}
+      </div>
+
+      <div className="pagination">
+        <ReactPaginate
+          breakLabel="..."
+          nextLabel="Trang kế"
+          previousLabel="Trang trước"
+          onPageChange={handlePageClick}
+          pageCount={totalPages}
+          forcePage={currentPage - 1}
+          pageClassName="page-item"
+          pageLinkClassName="page-link"
+          previousClassName="page-item"
+          previousLinkClassName="page-link"
+          nextClassName="page-item"
+          nextLinkClassName="page-link"
+          breakClassName="page-item"
+          breakLinkClassName="page-link"
+          containerClassName="pagination"
+          activeClassName="active"
+        />
+      </div>
     </div>
   );
 };

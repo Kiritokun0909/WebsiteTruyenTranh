@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import "../../styles/UploadManga.css";
+import "../../styles/admin/UploadManga.css";
 import { uploadManga } from "../../api/AdminService.js";
 import { fetchGenres } from "../../api/SiteService";
 
@@ -37,14 +37,26 @@ const UploadMangaPage = () => {
 
   const handleSubmit = async (event) => {
     event.preventDefault();
-    const response = await uploadManga(coverImage, mangaName, author
-      , ageLimit, description, selectedGenres);
-    
-    if (response.code === 201){
+
+    // Check if coverImage is provided
+    if (!coverImage) {
+      alert("Vui lòng tải lên ảnh bìa.");
+      return;
+    }
+
+    const response = await uploadManga(
+      coverImage,
+      mangaName,
+      author,
+      ageLimit,
+      description,
+      selectedGenres
+    );
+
+    if (response.code === 201) {
       alert("Thêm manga mới thành công.");
       navigate("/");
-    }
-    else{
+    } else {
       alert("Đã có lỗi xảy ra vui lòng thử lại sau.");
     }
   };
@@ -58,59 +70,84 @@ const UploadMangaPage = () => {
     );
   };
 
-  return (
-    <div>
-      <form onSubmit={handleSubmit} encType="multipart/form-data">
-        <div>
-          <label>Ảnh bìa:</label>
-          <input type="file" onChange={handleImageChange} />
-          {previewCoverImage && (
-            <div className="image-preview">
-              <img src={previewCoverImage} alt="Ảnh bìa" />
-            </div>
-          )}
-        </div>
+  const handleButtonClick = () => {
+    document.getElementById("fileInput").click();
+  };
 
-        <div>
-          <label>Tên manga:</label>
+  return (
+    <div className="upload-manga-layout">
+      <div className="home-header">
+        <h3>Đăng truyện mới</h3>
+      </div>
+
+      <form onSubmit={handleSubmit} encType="multipart/form-data">
+        <div className="cover-image">
+          <label>Ảnh bìa:</label>
+
+          <div className="image-preview">
+            {previewCoverImage ? (
+              <img src={previewCoverImage} alt="Ảnh bìa" />
+            ) : (
+              <img src={""} alt="Ảnh bìa" />
+            )}
+          </div>
+
+          <button type="button" onClick={handleButtonClick}>
+            Chọn ảnh
+          </button>
           <input
-            type="text"
-            value={mangaName}
-            onChange={(e) => setMangaName(e.target.value)}
+            type="file"
+            id="fileInput"
+            style={{ display: "none" }}
+            onChange={handleImageChange}
           />
         </div>
 
-        <div>
+        <div className="info-input">
+          <label>Tên manga:</label>
+          <input
+            className="info-input"
+            type="text"
+            value={mangaName}
+            onChange={(e) => setMangaName(e.target.value)}
+            required
+          />
+        </div>
+
+        <div className="info-input">
           <label>Tác giả:</label>
           <input
+            className="info-input"
             type="text"
             value={author}
             onChange={(e) => setAuthor(e.target.value)}
           />
         </div>
 
-        <div>
+        <div className="info-input">
           <label>Tuổi:</label>
           <input
+            className="age"
             type="number"
             value={ageLimit}
             onChange={(e) => setAgeLimit(e.target.value)}
           />
         </div>
 
-        <div>
+        <div className="info-input">
           <label>Mô tả:</label>
           <textarea
+            className="upload-description"
             value={description}
             onChange={(e) => setDescription(e.target.value)}
           />
         </div>
 
-        <div>
+        <div class="upload-genres">
           <label>Thể loại:</label>
           <div className="genres-list">
             {genres.map((genre) => (
-              <div key={genre.GenreID}>
+              <div key={genre.GenreID} className="genre-item">
                 <label>
                   <input
                     type="checkbox"
@@ -124,7 +161,9 @@ const UploadMangaPage = () => {
           </div>
         </div>
 
-        <button type="submit">Đăng truyện</button>
+        <div className="submit-button">
+          <button type="submit">Đăng truyện</button>
+        </div>
       </form>
     </div>
   );

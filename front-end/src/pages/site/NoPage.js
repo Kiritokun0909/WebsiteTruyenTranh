@@ -3,9 +3,7 @@ import React from 'react';
 const NoPage = () => {
   return (
     <div>
-        <h1>No Page</h1>
-
-       
+        <h1>404 NOT FOUND</h1>
     </div>
   );
 };

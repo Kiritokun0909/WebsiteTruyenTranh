@@ -55,7 +55,7 @@ const LoginPage = () => {
           <input type="email" name="email" required />
         </div>
         <div>
-          <label>Password:</label>
+          <label>Mật khẩu:</label>
           <input type="password" name="password" required />
         </div>
         {!isLogin && (
@@ -64,12 +64,18 @@ const LoginPage = () => {
             <input type="password" name="confirmPassword" required />
           </div>
         )}
+
+        <div>
+          
+        </div>
         <button type="submit">{isLogin ? "Đăng nhập" : "Đăng ký"}</button>
+
+        <button type="button" className="toggle-button" onClick={toggleAuthMode}>
+          {isLogin ? "Đăng ký" : "Đăng nhập"}
+      </button>
       </form>
 
-      <button className="toggle-button" onClick={toggleAuthMode}>
-        {isLogin ? "Đăng ký" : "Đăng nhập"}
-      </button>
+      
     </div>
   );
 };

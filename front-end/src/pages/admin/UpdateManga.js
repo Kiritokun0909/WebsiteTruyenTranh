@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import "../../styles/UploadManga.css";
+import "../../styles/admin/UploadManga.css";
 import { fetchGenres, fetchManga } from "../../api/SiteService";
 import { updateManga } from "../../api/AdminService";
 
@@ -28,10 +28,10 @@ const UpdateMangaPage = () => {
         setMangaName(manga.StoryName);
         setAuthor(manga.AuthorName);
         setAgeLimit(manga.AgeLimit);
-        setDescription(manga.Description);;
+        setDescription(manga.Description);
         setPreviewCoverImage(manga.CoverImageUrl);
 
-        const ids = listGenre.map(genre => String(genre.GenreID));
+        const ids = listGenre.map((genre) => String(genre.GenreID));
         setSelectedGenres(ids);
       } catch (error) {
         console.error("Error getting manga:", error);
@@ -61,18 +61,24 @@ const UpdateMangaPage = () => {
     event.preventDefault();
 
     // Remove duplicates
-    const uniqueIds = [...new Set(selectedGenres.map(id => String(id)))];
+    const uniqueIds = [...new Set(selectedGenres.map((id) => String(id)))];
     setSelectedGenres(uniqueIds);
 
     // console.log('submit selected genres: ', selectedGenres);
-    const response = await updateManga(mangaId, coverImage, mangaName, author
-      , ageLimit, description, selectedGenres);
-    
-    if (response.code === 200){
+    const response = await updateManga(
+      mangaId,
+      coverImage,
+      mangaName,
+      author,
+      ageLimit,
+      description,
+      selectedGenres
+    );
+
+    if (response.code === 200) {
       alert("Cập nhật manga thành công.");
       navigate("/manga/" + mangaId);
-    }
-    else{
+    } else {
       alert("Đã có lỗi xảy ra vui lòng thử lại sau.");
     }
   };
@@ -87,73 +93,99 @@ const UpdateMangaPage = () => {
     );
   };
 
+  const handleButtonClick = () => {
+    document.getElementById("fileInput").click();
+  };
+
   return (
-    <div>
-      <form onSubmit={handleSubmit} encType="multipart/form-data">
-        <div>
-          <label>Ảnh bìa:</label>
-          <input type="file" onChange={handleImageChange} />
-          <div className="image-preview">
+    <div className="upload-manga-layout">
+      <div className="home-header">
+        <h3>Cập nhật thông tin truyện</h3>
+      </div>
+
+      <div>
+        <form onSubmit={handleSubmit} encType="multipart/form-data">
+          <div className="cover-image">
+            <label>Ảnh bìa:</label>
+
+            <div className="image-preview">
               <img src={previewCoverImage} alt="Ảnh bìa" />
             </div>
-        </div>
 
-        <div>
-          <label>Tên manga:</label>
-          <input
-            type="text"
-            value={mangaName}
-            onChange={(e) => setMangaName(e.target.value)}
-          />
-        </div>
-
-        <div>
-          <label>Tác giả:</label>
-          <input
-            type="text"
-            value={author}
-            onChange={(e) => setAuthor(e.target.value)}
-          />
-        </div>
-
-        <div>
-          <label>Tuổi:</label>
-          <input
-            type="number"
-            value={ageLimit}
-            onChange={(e) => setAgeLimit(e.target.value)}
-          />
-        </div>
-
-        <div>
-          <label>Mô tả:</label>
-          <textarea
-            value={description}
-            onChange={(e) => setDescription(e.target.value)}
-          />
-        </div>
-
-        <div>
-          <label>Thể loại:</label>
-          <div className="genres-list">
-            {genres.map((genre) => (
-              <div key={genre.GenreID}>
-                <label>
-                  <input
-                    type="checkbox"
-                    value={genre.GenreID}
-                    checked={selectedGenres.includes(String(genre.GenreID))}
-                    onChange={handleGenreChange}
-                  />
-                  {genre.GenreName}
-                </label>
-              </div>
-            ))}
+            <button type="button" onClick={handleButtonClick}>
+              Chọn ảnh
+            </button>
+            <input
+              type="file"
+              id="fileInput"
+              style={{ display: "none" }}
+              onChange={handleImageChange}
+            />
           </div>
-        </div>
 
-        <button type="submit">Cập nhật truyện</button>
-      </form>
+          <div className="info-input">
+            <label>Tên manga:</label>
+            <input
+              className="info-input"
+              type="text"
+              value={mangaName}
+              onChange={(e) => setMangaName(e.target.value)}
+            />
+          </div>
+
+          <div className="info-input">
+            <label>Tác giả:</label>
+            <input
+              className="info-input"
+              type="text"
+              value={author}
+              onChange={(e) => setAuthor(e.target.value)}
+            />
+          </div>
+
+          <div className="info-input">
+            <label>Tuổi:</label>
+            <input
+              className="age"
+              type="number"
+              value={ageLimit}
+              onChange={(e) => setAgeLimit(e.target.value)}
+            />
+          </div>
+
+          <div className="info-input">
+            <label>Mô tả:</label>
+            <textarea
+              className="upload-description"
+              value={description}
+              onChange={(e) => setDescription(e.target.value)}
+            />
+          </div>
+
+          <div class="upload-genres">
+            <label>Thể loại:</label>
+            <div className="genres-list">
+              {genres.map((genre) => (
+                <div key={genre.GenreID} className="genre-item">
+                  <label>
+                    <input
+                      type="checkbox"
+                      value={genre.GenreID}
+                      checked={selectedGenres.includes(String(genre.GenreID))}
+                      onChange={handleGenreChange}
+                    />
+                    {genre.GenreName}
+                  </label>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          <div className="submit-button">
+            <button type="submit">Cập nhật truyện</button>
+          </div>
+        </form>
+      </div>
     </div>
   );
 };

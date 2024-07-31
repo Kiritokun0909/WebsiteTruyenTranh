@@ -129,94 +129,84 @@ const Manga = () => {
 
   return (
     <div className="manga-layout">
-      <div className="manga-item__sidebar-one"></div>
+      {manga.map((mangaItem) => (
+        <div key={mangaItem.MangaId} className="manga-info">
+          <div className="manga-cover">
+            <img
+              src={mangaItem.CoverImageUrl}
+              alt={mangaItem.StoryName}
+              className="manga-cover"
+            />
+          </div>
 
-      <div className="manga-item__main-column">
-        {manga.map((mangaItem) => (
-          <div key={mangaItem.MangaId} className="manga-info">
-            <div className="manga-cover">
-              <img
-                src={mangaItem.CoverImageUrl}
-                alt={mangaItem.StoryName}
-                className="manga-cover"
-              />
+          <div className="manga-info-detail">
+            <h4>{mangaItem.StoryName}</h4>
+            <div className="list-info">
+              <p>
+                <strong>Tác giả:</strong> {mangaItem.AuthorName}
+              </p>
+              <p>
+                <strong>Độ tuổi:</strong> {mangaItem.AgeLimit}+
+              </p>
+              <p>
+                <strong>Lượt xem:</strong> {mangaItem.NumViews}
+              </p>
+              <p>
+                <strong>Lượt theo dõi:</strong> {mangaItem.NumFollows}
+              </p>
+              <p>
+                <strong>Lượt yêu thích:</strong> {mangaItem.NumLikes}
+              </p>
             </div>
 
-            <div className="manga-info-detail">
-              <h4>{mangaItem.StoryName}</h4>
-              <div className="list-info">
-                <p>
-                  <strong>Tác giả:</strong> {mangaItem.AuthorName}
-                </p>
-                <p>
-                  <strong>Độ tuổi:</strong> {mangaItem.AgeLimit}+
-                </p>
-                <p>
-                  <strong>Lượt xem:</strong> {mangaItem.NumViews}
-                </p>
-                <p>
-                  <strong>Lượt theo dõi:</strong> {mangaItem.NumFollows}
-                </p>
-                <p>
-                  <strong>Lượt yêu thích:</strong> {mangaItem.NumLikes}
-                </p>
-              </div>
-
-              <div className="btn-like-follow">
-                <button type="button" id="btn-like" onClick={handleLikeClick}>
-                  {isLike ? "Huỷ thích" : "Thích"}
-                </button>
-                <button
-                  type="button"
-                  id="btn-follow"
-                  onClick={handleFollowClick}
-                >
-                  {isFollow ? "Huỷ theo dõi" : "Theo dõi"}
-                </button>
-              </div>
-
-              {isAdmin ? (
-                <div className="btn-admin">
-                  <div>
-                    <NavLink to={`/update-manga/${mangaItem.MangaId}`}>
-                      Cập nhật thông tin truyện
-                    </NavLink>
-                  </div>
-
-                  <div>
-                    <NavLink to={`/upload-chapter/${mangaItem.MangaId}`}>
-                      Đăng chương mới
-                    </NavLink>
-                  </div>
-                </div>
-              ) : (
-                <div></div>
-              )}
+            <div className="btn-like-follow">
+              <button type="button" id="btn-like" onClick={handleLikeClick}>
+                {isLike ? "Huỷ thích" : "Thích"}
+              </button>
+              <button type="button" id="btn-follow" onClick={handleFollowClick}>
+                {isFollow ? "Huỷ theo dõi" : "Theo dõi"}
+              </button>
             </div>
           </div>
-        ))}
+        </div>
+      ))}
 
-        <div className="manga-description">
-          <div className="genre-list">
-            {genres.map((genre) => (
-              <NavLink
-                key={genre.GenreID}
-                to={`/?genreId=${genre.GenreID}&pageNumber=1`}
-              >
-                {genre.GenreName}
-              </NavLink>
-            ))}
+      {isAdmin ? (
+        <div className="admin">
+          <div>
+            <NavLink to={`/update-manga/${mangaId}`}>
+              Cập nhật thông tin truyện
+            </NavLink>
           </div>
-          {manga.map((mangaItem) => (
-            <div key={mangaItem.MangaId} className="description">
-              <strong>Description:</strong> {mangaItem.Description}
-            </div>
+
+          <div>
+            <NavLink to={`/upload-chapter/${mangaId}`}>Đăng chương mới</NavLink>
+          </div>
+        </div>
+      ) : (
+        <div></div>
+      )}
+
+      <div className="manga-description">
+        <div className="genre-list">
+          {genres.map((genre) => (
+            <NavLink
+              key={genre.GenreID}
+              to={`/?genreId=${genre.GenreID}&pageNumber=1`}
+            >
+              {genre.GenreName}
+            </NavLink>
           ))}
         </div>
+        {manga.map((mangaItem) => (
+          <div key={mangaItem.MangaId} className="description">
+            <strong>Mô tả:</strong> {mangaItem.Description}
+          </div>
+        ))}
+      </div>
 
-        <div className="header-title">
-          <h4>List Chapter</h4>
-        </div>
+      <div className="list-chapter">
+        <h4>Danh sách chương</h4>
         <div className="manga-chapter">
           {chapters.map((chapter) => (
             <div key={chapter.ChapterID} className="chapter-row">
@@ -229,33 +219,44 @@ const Manga = () => {
             </div>
           ))}
         </div>
+      </div>
 
-        <div className="header-title ">
-          <h4>Comments</h4>
-        </div>
+      <div className="comment-section">
+        <h4>Bình luận</h4>
         <div className="manga-comment">
           <div className="comment-form">
-            <textarea
-              value={newComment}
-              onChange={(e) => setNewComment(e.target.value)}
-              placeholder="Bình luận..."
-            />
-            <button onClick={handleSubmitComment}>Bình luận</button>
+            <div className="comment-area">
+              <textarea
+                value={newComment}
+                onChange={(e) => setNewComment(e.target.value)}
+                placeholder="Bình luận..."
+              />
+            </div>
+
+            <div className="comment-button">
+              <button onClick={handleSubmitComment}>Bình luận</button>
+            </div>
           </div>
 
-          <ul>
-            {comments.map((comment) => (
-              <li key={comment.commentDate}>
-                {comment.username}: {comment.context}
-              </li>
-            ))}
-          </ul>
+          <div className="list-comment">
+            <ul>
+              {comments.map((comment, index) => (
+                <li key={`${comment.commentDate}-${index}`}>
+                  <div className="comment-header">
+                    <span className="username">{comment.username}</span>
+                    <span className="comment-date">{comment.commentDate}</span>
+                  </div>
+                  <p className="comment-content">{comment.context}</p>
+                </li>
+              ))}
+            </ul>
+          </div>
 
           <div className="pagination">
             <ReactPaginate
               breakLabel="..."
-              nextLabel="Next"
-              previousLabel="Previous"
+              nextLabel="Trang kế"
+              previousLabel="Trang trước"
               onPageChange={handlePageClick}
               pageCount={totalPages}
               forcePage={currentPage - 1}
@@ -273,8 +274,6 @@ const Manga = () => {
           </div>
         </div>
       </div>
-
-      <div className="manga-item__sidebar-two"></div>
     </div>
   );
 };

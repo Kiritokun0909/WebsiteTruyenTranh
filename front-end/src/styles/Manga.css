@@ -1,46 +1,20 @@
 .manga-layout {
   display: flex;
-}
-
-.manga-item__sidebar-one,
-.manga-item__sidebar-two {
-  flex: 1;
-  display: block;
-  background-color: #ebebeb;
-}
-
-.main-column {
-  flex: 2;
-  background-color: white;
-  border-radius: 4px;
-  min-height: 80vh;
-}
-
-.manga-item__main-column {
-  flex: 2;
-  background-color: white;
-  padding: 16px 16px;
-  border-radius: 4px;
-}
-
-@media (max-width: 1024px) {
-  .manga-item__sidebar-one,
-  .manga-item__sidebar-two {
-    display: none;
-  }
+  flex-direction: column;
+  gap: 8px;
 }
 
 .manga-info {
   display: flex;
-  padding-bottom: 4px;
 }
 
-.manga-cover {
-  width: 175px;
+.manga-cover img {
+  width: 150px;
+  height: 200px;
   border-radius: 5px;
 }
 
-@media (max-width: 768px) {
+@media (max-width: 1024px) {
   .manga-info {
     display: flex;
     flex-direction: column;
@@ -52,7 +26,7 @@
 }
 
 .manga-info-detail {
-  padding: 8px 12px;
+  margin-left: 12px;
 }
 
 .list-info {
@@ -92,11 +66,41 @@
   filter: brightness(85%); /* Adjust brightness for blur effect */
 }
 
+.admin {
+  margin-top: 0px;
+  display: flex;
+  flex-wrap: wrap;
+}
+
+.admin a {
+  color: black;
+  text-decoration: none;
+  border: none;
+  border-radius: 4px;
+  background-color: greenyellow;
+  color: black;
+  padding: 6px 8px;
+  font-size: medium;
+  font-weight: 600;
+  flex-wrap: wrap;
+  margin: 4px 4px;
+}
+
+.admin a:hover {
+  filter: brightness(85%); /* Adjust brightness for blur effect */
+}
+
 .manga-description{
   text-align: left;
 }
 
-.manga-description a {
+.genre-list {
+  margin-top: 0px;
+  display: flex;
+  flex-wrap: wrap;
+}
+
+.genre-list a {
   color: black;
   text-decoration: none;
   border: none;
@@ -110,20 +114,13 @@
   margin: 4px 4px;
 }
 
-.manga-description a:hover {
+.genre-list a:hover {
   filter: brightness(85%); /* Adjust brightness for blur effect */
 }
 
-.genre-list {
-  margin-top: 0px;
-  display: flex;
-  flex-wrap: wrap;
-}
-
-.header-title  {
+.list-chapter  {
   margin-top: 12px;
   text-align: left;
-  
 }
 
 .manga-chapter {
@@ -149,4 +146,83 @@
 
 .chapter-row a:hover {
   color: orange;
+}
+
+.comment-section  {
+  margin-top: 12px;
+  text-align: left;
+}
+
+.comment-form {
+  margin-bottom: 12px;
+}
+
+.comment-area textarea{
+  padding: 8px;
+  width: 100%;
+  resize: none;
+  height: 125px;
+  /* overflow: hidden;     Hide the scrollbar */
+  /* box-sizing: border-box; */
+  border-radius: 6px;
+}
+
+.comment-button {
+  display: flex;
+  justify-content: flex-end;
+}
+
+.comment-button button {
+  background-color: #209cee;
+  color: white;
+  border: 1px;
+  border-radius: 4px;
+  padding: 6px;
+}
+
+
+.list-comment {
+  max-width: 600px; /* Set a max width for the comment list container */
+  margin: 0 auto; /* Center the container horizontally */
+  padding: 0.5rem; /* Add some padding */
+  border: 1px solid #ddd; /* Add a border around the container */
+  border-radius: 8px; /* Round the corners */
+  background-color: #f9f9f9; /* Light background color */
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Add a subtle shadow */
+}
+
+.list-comment ul {
+  list-style: none; /* Remove default list bullets */
+  padding: 0; /* Remove default padding */
+  margin: 0; /* Remove default margin */
+}
+
+.list-comment li {
+  padding: 0.5rem; /* Add padding around each comment */
+  border-bottom: 1px solid #ddd; /* Add a bottom border between comments */
+}
+
+.list-comment li:last-child {
+  border-bottom: none; /* Remove the bottom border from the last comment */
+}
+
+.comment-header {
+  display: flex;
+  justify-content: space-between; /* Space out the username and date */
+  margin-bottom: 0.5rem; /* Add some space between header and content */
+}
+
+.username {
+  font-weight: bold; /* Make the username bold */
+  color: #333; /* Dark text color for better readability */
+}
+
+.comment-date {
+  font-size: 0.875rem; /* Slightly smaller font size for the date */
+  color: #666; /* Lighter color for the date */
+}
+
+.comment-content {
+  margin: 0; /* Remove default margin */
+  line-height: 1.5; /* Increase line height for better readability */
 }

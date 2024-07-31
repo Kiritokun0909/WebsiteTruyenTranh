@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
-import "../../styles/UploadManga.css";
+import "../../styles/admin/UploadManga.css";
 import { uploadChapter } from "../../api/AdminService.js";
 import { fetchManga } from "../../api/SiteService.js";
 
@@ -8,6 +8,9 @@ const UploadChapterPage = () => {
   const { mangaId } = useParams();
   const [manga, setManga] = useState([]);
 
+  const [latestChapterName, setLatestChapterName] = useState(
+    "Không có chương nào"
+  );
   const [chapterName, setChapterName] = useState("");
   const [images, setImages] = useState([]);
   const [previews, setPreviews] = useState([]);
@@ -19,6 +22,10 @@ const UploadChapterPage = () => {
       try {
         const data = await fetchManga(mangaId);
         setManga(data.manga);
+
+        if (data.chapters.length !== 0) {
+          setLatestChapterName(data.chapters[0].ChapterName);
+        }
       } catch (error) {
         console.error("Error getting manga:", error);
       }
@@ -57,70 +64,99 @@ const UploadChapterPage = () => {
     }
   };
 
+  const handleButtonClick = (index) => {
+    document.getElementById("fileInput-" + index).click();
+  };
+
   return (
-    <div>
+    <div className="upload-manga-layout">
       <form onSubmit={handleSubmit} encType="multipart/form-data">
         <div>
-        {manga.map((mangaItem) => (
-          <div key={mangaItem.MangaId} className="manga-info">
-            <div className="manga-cover">
-              <img
-                src={mangaItem.CoverImageUrl}
-                alt={mangaItem.StoryName}
-                className="manga-cover"
-              />
-            </div>
+          {manga.map((mangaItem) => (
+            <div key={mangaItem.MangaId} className="manga-info">
+              <div className="manga-cover">
+                <img
+                  src={mangaItem.CoverImageUrl}
+                  alt={mangaItem.StoryName}
+                  className="manga-cover"
+                />
+              </div>
 
-            <div className="manga-info-detail">
-              <h4>{mangaItem.StoryName}</h4>
-              <div className="list-info">
-                <p>
-                  <strong>Tác giả:</strong> {mangaItem.AuthorName}
-                </p>
-                <p>
-                  <strong>Độ tuổi:</strong> {mangaItem.AgeLimit}+
-                </p>
-                <p>
-                  <strong>Lượt xem:</strong> {mangaItem.NumViews}
-                </p>
-                <p>
-                  <strong>Lượt theo dõi:</strong> {mangaItem.NumFollows}
-                </p>
-                <p>
-                  <strong>Lượt yêu thích:</strong> {mangaItem.NumLikes}
-                </p>
+              <div className="manga-info-detail">
+                <h4>{mangaItem.StoryName}</h4>
+                <div className="list-info">
+                  <p>
+                    <strong>Tác giả:</strong> {mangaItem.AuthorName}
+                  </p>
+                  <p>
+                    <strong>Độ tuổi:</strong> {mangaItem.AgeLimit}+
+                  </p>
+                  <p>
+                    <strong>Lượt xem:</strong> {mangaItem.NumViews}
+                  </p>
+                  <p>
+                    <strong>Lượt theo dõi:</strong> {mangaItem.NumFollows}
+                  </p>
+                  <p>
+                    <strong>Lượt yêu thích:</strong> {mangaItem.NumLikes}
+                  </p>
+                  <p>
+                    <strong>Chương mới nhất:</strong> {latestChapterName}
+                  </p>
+                </div>
               </div>
             </div>
-          </div>
-        ))}
+          ))}
         </div>
 
-        <div>
+        <div className="info-input" style={{ marginTop: "12px", marginBottom: "8px" }}>
           <label>Tên chapter mới:</label>
           <input
             type="text"
             value={chapterName}
             onChange={(e) => setChapterName(e.target.value)}
+            required
           />
         </div>
 
         {images.map((image, index) => (
-          <div key={index}>
+          <div key={index} className="cover-image">
             <label>Ảnh {index + 1}:</label>
-            <input type="file" onChange={(e) => handleImageChange(e, index)} />
-            {previews[index] && (
-              <div className="image-preview">
-                <img src={previews[index]} alt={`Preview ${index + 1}`} />
-              </div>
-            )}
+
+            <div className="image-preview">
+              {previews[index] ? (
+                <img src={previews[index]} alt={`Ảnh ${index + 1}`} />
+              ) : (
+                <img src={""} alt={`Ảnh ${index + 1}`} />
+              )}
+            </div>
+
+            <button type="button" onClick={() => handleButtonClick(index)}>
+              Chọn ảnh
+            </button>
+
+            <input
+              type="file"
+              id={`fileInput-${index}`}
+              style={{ display: "none" }}
+              onChange={(e) => handleImageChange(e, index)}
+            />
           </div>
         ))}
 
-        <button type="button" onClick={addImageField}>
-          Thêm ảnh
-        </button>
+        <div className="submit-button">
+          <button
+            type="button"
+            onClick={addImageField}
+            style={{ margin: "4px" }}
+          >
+            Thêm ảnh
+          </button>
 
-        <button type="submit">Đăng chương</button>
+          <button type="submit" style={{ margin: "4px" }}>
+            Đăng chương
+          </button>
+        </div>
       </form>
     </div>
   );

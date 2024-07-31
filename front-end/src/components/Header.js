@@ -41,6 +41,8 @@ const Header = () => {
   const adminDropdown = useDropdownVisibility();
   const accountDropdown = useDropdownVisibility();
 
+  const [searchText, setSearchText] = useState("");
+
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -63,14 +65,15 @@ const Header = () => {
   };
 
   const handleFindClick = () => {
-    navigate("/#");
+    navigate(`/?keyword=${searchText}&pageNumber=1`);
   };
 
   const handleLogout = () => {
-    if (window.confirm("Are you sure you want to log out?")) {
+    if (window.confirm("Bạn chắc chắn muốn đăng xuất?")) {
       localStorage.removeItem("authToken");
       localStorage.removeItem("roleId");
       setIsLoggedIn(false);
+      window.location.reload();
     }
   };
 
@@ -81,7 +84,12 @@ const Header = () => {
           <Link to="/">Manga Reader</Link>
         </div>
         <div className="search-bar">
-          <input type="text" placeholder="Search..." />
+          <input
+            type="text"
+            placeholder="Tìm kiếm..."
+            value={searchText}
+            onChange={(e) => setSearchText(e.target.value)}
+          />
           <div className="auth-buttons">
             <button onClick={handleFindClick}>Tìm</button>
           </div>

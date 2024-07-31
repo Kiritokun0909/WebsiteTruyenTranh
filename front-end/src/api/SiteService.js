@@ -95,3 +95,15 @@ export const fetchMangaComment = async (mangaId, pageNumber) => {
     console.error("Error fetching list manga comment:", error);
   }
 };
+
+export const fetchChapterComment = async (chapterId, pageNumber) => {
+  try {
+    const response = await fetch("/chapter/" + chapterId + "/comment/" + pageNumber);
+    if (!response.ok) {
+      throw new Error("Failed to fetch list chapter comment");
+    }
+    return await response.json();
+  } catch (error) {
+    console.error("Error fetching list chapter comment:", error);
+  }
+};
