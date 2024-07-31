@@ -271,10 +271,15 @@ module.exports.getMangaComment = async (mangaId = 1, pageNumber = 1, itemsPerPag
             [mangaId, itemsPerPage, offset]
         );
 
+        const formattedComments = rows.map(comment => ({
+            ...comment,
+            commentDate: formatDate(comment.commentDate)
+        }));
+
         return {
             pageNumber,
             totalPages,
-            comments: rows
+            comments: formattedComments 
         };
     } catch (err) {
         console.error('Failed to connect to the database\n', err);
@@ -317,10 +322,15 @@ module.exports.getChapterComment = async (chapterId = 1, pageNumber = 1, itemsPe
             [chapterId, itemsPerPage, offset]
         );
 
+        const formattedComments = rows.map(comment => ({
+            ...comment,
+            commentDate: formatDate(comment.commentDate)
+        }));
+
         return {
             pageNumber,
             totalPages,
-            comments: rows
+            comments: formattedComments 
         };
     } catch (err) {
         console.error('Failed to connect to the database\n', err);
