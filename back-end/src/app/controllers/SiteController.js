@@ -40,7 +40,7 @@ class SiteController {
 
     // [GET] /mangas/pageNumber={pageNumber}
     async getListManga(req, res){
-        let currentPage = parseInt(req.params.pageNumber, 10) || 1;
+        const currentPage = parseInt(req.params.pageNumber, 10) || 1;
         
         if (isNaN(currentPage) || currentPage < 1) {
             res.status(HTTP_STATUS.BAD_REQUEST).json({ error: 'Invalid PageNumber' });
@@ -76,6 +76,24 @@ class SiteController {
             return;
         } catch (err) { }
         res.status(HTTP_STATUS.INTERNAL_SERVER_ERROR).json({ error: 'Failed to get list manga by genre' });
+    }
+
+    // [GET] /mangas/keyword={keyword}&pageNumber={pageNumber}
+    async getListMangaByKeyword(req, res){
+        const keyword = req.params.keyword;
+        const currentPage = parseInt(req.params.pageNumber, 10) || 1;
+        
+        if (isNaN(currentPage) || currentPage < 1) {
+            res.status(HTTP_STATUS.BAD_REQUEST).json({ error: 'Invalid PageNumber' });
+            return;
+        }
+
+        try {
+            const result = await siteService.getListMangaByKeyword(keyword, currentPage, HANDLE_CODE.NUM_OF_ITEM_PER_PAGE);
+            res.json(result);
+            return;
+        } catch (err) { }
+        res.status(HTTP_STATUS.INTERNAL_SERVER_ERROR).json({ error: 'Failed to get list manga' });
     }
 
     // [GET] /manga/{mangaId}

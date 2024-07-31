@@ -46,12 +46,26 @@ export const fetchMangasByGenre = async (genreId, pageNumber) => {
   }
 };
 
+export const fetchMangasByKeyword = async (keyword, pageNumber) => {
+  try {
+    const response = await fetch("/mangas/keyword=" + keyword +"&pageNumber=" + pageNumber);
+    if (!response.ok) {
+      throw new Error("Failed to fetch list manga by keyword");
+    }
+    return await response.json();
+  } catch (error) {
+    console.error("Error fetching list manga by keyword:", error);
+  }
+};
+
 export const fetchManga = async (mangaId) => {
   try {
     const response = await fetch("/manga/" + mangaId);
     if (!response.ok) {
       throw new Error("Failed to fetch manga with id=" + mangaId);
     }
+
+    // console.log(response.json());
     return await response.json();
   } catch (error) {
     console.error("Error fetching manga:", error);

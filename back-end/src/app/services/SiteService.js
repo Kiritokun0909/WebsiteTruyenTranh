@@ -327,3 +327,38 @@ module.exports.getChapterComment = async (chapterId = 1, pageNumber = 1, itemsPe
         throw err;
     }
 }
+
+
+module.exports.getListMangaByKeyword = async (keywords = '', pageNumber = 1, itemsPerPage = 5) => {
+    try {
+        const keywordCondition = keywords ? 'WHERE StoryName LIKE ?' : '';
+        const keywordQuery = keywords ? `%${keywords}%` : '';
+
+        const [totalRows] = await db.query(`SELECT COUNT(MangaID) as total FROM manga ${keywordCondition}`, [keywordQuery]);
+        const totalMangas = totalRows[0].total;
+
+        const totalPages = Math.ceil(totalMangas / itemsPerPage);
+        if (pageNumber > totalPages) {
+            return { 
+                pageNumber,
+                totalPages, 
+                mangas: []
+            };
+        }
+
+        const offset = (pageNumber - 1) * itemsPerPage;
+        const [rows] = await db.query(
+            `SELECT MangaID, CoverImageUrl, StoryName, NumChapter FROM manga ${keywordCondition} ORDER BY UpdateDate DESC LIMIT ? OFFSET ?`,
+            [keywordQuery, itemsPerPage, offset]
+        );
+
+        return {
+            pageNumber,
+            totalPages,
+            mangas: rows
+        };
+    } catch (err) {
+        console.error('Failed to connect to the database\n', err);
+        throw err;
+    }
+};
