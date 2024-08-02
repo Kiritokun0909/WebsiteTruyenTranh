@@ -97,22 +97,6 @@ module.exports.setMangaHideStatus = async (mangaId, isHide = false) => {
     }
 }
 
-module.exports.removeManga = async (mangaId) => {
-    try {
-        const query = `
-            DELETE FROM manga
-            WHERE MangaId = ?;
-        `;
-        const values = [mangaId];
-        const [result] = await db.query(query, values);
-
-        return { code: SUCCESS, message: 'Remove manga successfully.' };;
-    } catch (err) {
-        console.error('Failed to remove manga:', err);
-        throw err;
-    }
-}
-
 module.exports.addChapter = async (chapterName, mangaId) => {
     try {
         const [insertRow] = await db.query(`
@@ -166,6 +150,20 @@ module.exports.addChapterImages = async (chapterImages, chapterId) => {
         return { code: SUCCESS, message: 'Add list chapter image successfully.' };
     } catch (err) {
         console.error('Failed to add list chapter image:', err);
+        throw err;
+    }
+}
+
+module.exports.removeChapter = async (chapterId) => {
+    try {
+        const [result] = await db.query(`
+            DELETE FROM chapter
+            WHERE ChapterID = ?;
+        `, [chapterId]);
+
+        return { code: SUCCESS, message: 'Remove chapter successfully.' };;
+    } catch (err) {
+        console.error('Failed to remove chapter:', err);
         throw err;
     }
 }

@@ -19,7 +19,8 @@ router.put('/update-manga'
             , upload.single('coverImage')
             , validation.validUploadMangaBody
             , controller.updateManga);
-router.delete('/remove-manga/:mangaId', controller.removeManga);
+            
+router.delete('/remove-chapter/:chapterId', controller.removeChapter);
 
 router.put('/hide-manga/:mangaId', controller.hideManga);
 router.put('/unhide-manga/:mangaId', controller.unhideManga);

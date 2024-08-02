@@ -54,29 +54,6 @@ class AdminController {
             res.status(500).json({ message: 'Failed to update manga.' });
         }
     }
-    
-
-    // [DELETE] /admin/remove-manga/{mangaId}
-    async removeManga(req, res) {
-        const mangaId = parseInt(req.params.mangaId, 10);
-
-        if (isNaN(mangaId) || mangaId < 1) {
-            res.status(400).json({ error: 'Invalid MangaId' });
-            return;
-        }
-
-        try {
-            const result = await adminService.removeManga(mangaId);
-            if(result && result.code == adminService.SUCCESS_CODE) {
-                res.status(200).json({ message: result.message });
-                return;
-            }
-
-        } catch (err) {
-            console.error(err);
-            res.status(500).json({ message: "Failed to delete manga." });
-        }
-    }
 
     // [PUT] /admin/hide-manga/{mangaId}
     async hideManga(req, res) {
@@ -164,6 +141,28 @@ class AdminController {
         } catch (error) {
             console.error(error);
             res.status(500).json({ message: "Failed to add new chapter." });
+        }
+    }
+
+    // [DELETE] /admin/remove-chapter/{chapterId}
+    async removeChapter(req, res) {
+        const chapterId = parseInt(req.params.chapterId, 10);
+
+        if (isNaN(chapterId) || chapterId < 1) {
+            res.status(400).json({ error: 'Invalid chapterId' });
+            return;
+        }
+
+        try {
+            const result = await adminService.removeChapter(chapterId);
+            if(result && result.code == adminService.SUCCESS_CODE) {
+                res.status(200).json({ message: result.message });
+                return;
+            }
+
+        } catch (err) {
+            console.error(err);
+            res.status(500).json({ message: "Failed to remove chapter." });
         }
     }
 }
