@@ -71,8 +71,8 @@ const FollowPage = () => {
       <div className="pagination">
         <ReactPaginate
           breakLabel="..."
-          nextLabel="Next"
-          previousLabel="Previous"
+          nextLabel="Trang kế"
+          previousLabel="Trang trước"
           onPageChange={handlePageClick}
           pageCount={totalPages}
           forcePage={currentPage - 1}

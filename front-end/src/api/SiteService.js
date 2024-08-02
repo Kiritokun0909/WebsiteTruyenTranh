@@ -76,9 +76,9 @@ export const fetchChapter = async (chapterId) => {
   try {
     const response = await fetch("/chapter/" + chapterId);
     if (!response.ok) {
-      throw new Error("Failed to fetch chapter with id=" + chapterId);
+     console.log("Failed to fetch chapter with id=" + chapterId);
     }
-    return await response.json();
+    return await response;
   } catch (error) {
     console.error("Error fetching chapter:", error);
   }

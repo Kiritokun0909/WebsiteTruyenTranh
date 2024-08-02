@@ -97,3 +97,20 @@ export const uploadChapter = async (mangaId, chapterName, chapterImages) => {
   }
 };
 
+export const removeChapter = async (chapterId) => {
+  try {
+    const token = localStorage.getItem("authToken");
+    
+    const response = await fetch("/admin/remove-chapter/" + chapterId, {
+      method: "DELETE",
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+
+    const message = await response.json();
+    return { code: response.status, message: message };
+  } catch (error) {
+    console.error("Error upload chapter:", error);
+  }
+};

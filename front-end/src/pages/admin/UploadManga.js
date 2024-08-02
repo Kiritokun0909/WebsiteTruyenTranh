@@ -143,7 +143,7 @@ const UploadMangaPage = () => {
           />
         </div>
 
-        <div class="upload-genres">
+        <div className="upload-genres">
           <label>Thể loại:</label>
           <div className="genres-list">
             {genres.map((genre) => (

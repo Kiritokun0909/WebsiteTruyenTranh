@@ -28,6 +28,21 @@
   color: #f18121;
 }
 
+.btn-delete button {
+  margin: 8px 4px;
+  border: none;
+  background-color: #ff3860;
+  color: white;
+  border-radius: 4px;
+  padding: 8px 12px;
+  font-size: medium;
+  transition: filter 0.3s ease; /* Add transition for smooth effect */
+}
+
+.btn-delete button:hover{
+  filter: brightness(85%); /* Adjust brightness for blur effect */
+}
+
 .chapter-navigate {
   margin-bottom: 12px;
   margin-top: 12px;

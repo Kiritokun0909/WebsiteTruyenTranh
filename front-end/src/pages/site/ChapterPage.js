@@ -1,11 +1,12 @@
 // src/components/Header.js
 import React, { useEffect, useState } from "react";
-import { NavLink, useParams } from "react-router-dom";
+import { NavLink, useParams, useNavigate } from "react-router-dom";
 import ReactPaginate from "react-paginate";
 import "../../styles/Chapter.css";
 
 import { fetchChapter, fetchChapterComment } from "../../api/SiteService";
 import { commentChapter } from "../../api/AccountService";
+import { removeChapter } from "../../api/AdminService";
 
 const Chapter = () => {
   const { id } = useParams();
@@ -17,14 +18,36 @@ const Chapter = () => {
   const [chapter, setChapter] = useState([]);
 
   const [isLoggedIn] = useState(!!localStorage.getItem("authToken"));
-  // const [isAdmin] = useState(localStorage.getItem("roleId") === "1");
+  const [isAdmin] = useState(localStorage.getItem("roleId") === "1");
 
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
   const [comments, setComments] = useState([]);
   const [newComment, setNewComment] = useState("");
 
+  const navigation = useNavigate();
+
   useEffect(() => {
+    const getChapter = async (chapterId) => {
+      try {
+        const response = await fetchChapter(chapterId);
+  
+        if(response.status !== 200){
+          navigation("/");
+          return;
+        }
+        const data = await response.json();
+        setMangaId(data.mangaId);
+        setMangaName(data.mangaName);
+        setChapterName(data.chapterName);
+        setPreviousChapterId(data.previousChapterId);
+        setNextChapterId(data.nextChapterId);
+        setChapter(data.chapter);
+      } catch (error) {
+        console.error("Error get chapter:", error);
+      }
+    };
+
     const getComments = async (pageNumber) => {
       try {
         const data = await fetchChapterComment(id, pageNumber);
@@ -37,21 +60,8 @@ const Chapter = () => {
 
     getChapter(id);
     getComments(currentPage);
-  }, [id, currentPage]);
+  }, [id, currentPage, navigation]);
 
-  const getChapter = async (chapterId) => {
-    try {
-      const data = await fetchChapter(chapterId);
-      setMangaId(data.mangaId);
-      setMangaName(data.mangaName);
-      setChapterName(data.chapterName);
-      setPreviousChapterId(data.previousChapterId);
-      setNextChapterId(data.nextChapterId);
-      setChapter(data.chapter);
-    } catch (error) {
-      console.error("Error get chapter:", error);
-    }
-  };
 
   const handlePageClick = (event) => {
     const page = event.selected + 1;
@@ -71,6 +81,18 @@ const Chapter = () => {
     window.location.reload();
   };
 
+  const handleDeleteButton = async (e) => {
+    e.preventDefault();
+
+    if (window.confirm("Thao tác này sẽ không thể hoàn tác lại được. Bạn chắc chắn muốn xoá chương này?")) {
+      const response = await removeChapter(id);
+      if(response.code === 200){
+        navigation('/manga/' + mangaId);
+      }
+    }
+  };
+
+
  
 
   return (
@@ -82,7 +104,15 @@ const Chapter = () => {
         </h3>
       </div>
 
-      <div className="chapter-navigate">
+      <div className="chapter-navigate" style={{marginBottom: `0px`, marginTop: `0px`}}>
+        {isAdmin && (
+          <div className="btn-delete">
+            <button type="button" onClick={handleDeleteButton}>Xoá chương</button>
+          </div>
+        )}
+      </div>
+
+      <div className="chapter-navigate" style={{marginTop: `0px`}}>
         {previousChapterId ? (
           <NavLink to={`/chapter/${previousChapterId}`}>Chương trước</NavLink>
         ) : (

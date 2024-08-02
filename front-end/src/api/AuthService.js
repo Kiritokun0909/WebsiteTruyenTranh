@@ -1,9 +1,3 @@
-export const RoleEnum = {
-  ADMIN: 1,
-  TRANSLATOR: 2,
-  USER: 3,
-};
-
 export const login = async (email, password) => {
   try {
     const response = await fetch("/auth/login", {
@@ -38,16 +32,5 @@ export const register = async (email, password) => {
   }
 };
 
-const getToken = () => localStorage.getItem('authToken');
-const getRoleId = () => localStorage.getItem('roleId');
 
-export const isAuthenticated = () => {
-  const token = getToken();
-  return token !== null;
-};
-
-export const hasRole = (roleId) => {
-  const userRoleId = getRoleId();
-  return userRoleId === roleId;
-};
 

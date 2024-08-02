@@ -133,10 +133,10 @@ const Header = () => {
                     <Link to="/upload-manga">Đăng truyện</Link>
                   </li>
                   <li>
-                    <Link to="#">Hướng dẫn</Link>
+                    <Link to="/guide">Hướng dẫn</Link>
                   </li>
                   <li>
-                    <Link to="#">Quy định</Link>
+                    <Link to="/policy">Quy định</Link>
                   </li>
                 </ul>
               )}
@@ -167,7 +167,7 @@ const Header = () => {
                     <Link to="/follow-list">Theo dõi</Link>
                   </li>
                   <li onClick={handleLogout}>
-                    <Link to="/">Đăng xuất</Link>
+                    <Link to="#">Đăng xuất</Link>
                   </li>
                 </ul>
               )}
