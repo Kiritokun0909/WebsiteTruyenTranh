@@ -177,27 +177,22 @@ module.exports.getChapter = async (chapterId) => {
                 current.chapterid,
                 current.chaptername,
                 mangainfo.storyname,
-                prev.chapterid AS prev_chapterid,
-                next.chapterid AS next_chapterid,
                 current.mangaid
             FROM chapter AS current
-            LEFT JOIN chapter AS prev 
-                ON prev.mangaid = current.mangaid 
-                AND prev.chapterid < current.chapterid
-            LEFT JOIN chapter AS next 
-                ON next.mangaid = current.mangaid 
-                AND next.chapterid > current.chapterid
             JOIN manga as mangainfo
 	            ON current.mangaid = mangainfo.mangaid
             WHERE current.chapterid = ?
-            ORDER BY prev.chapterid DESC, next.chapterid ASC
             LIMIT 1;`, 
             [chapterId]
         );
 
+
+
         if (chapterInfoRows.length === 0) {
             return { code: NOT_FOUND, message: 'Cannot found chapter with id=' + chapterId + '.' };
         }
+
+        
 
         const [chapterImageRows] = await db.query(
             `select OrderNumber, ImageUrl 
@@ -206,8 +201,35 @@ module.exports.getChapter = async (chapterId) => {
             [chapterId]
         );
 
-        // Update +1 view for manga
         const mangaId = chapterInfoRows[0].mangaid;
+        const [listChapterRows] = await db.query(
+            `select ChapterID
+            from chapter
+            where MangaId = ?
+            order by 
+                CAST(SUBSTRING_INDEX(chaptername, ' ', -1) AS DECIMAL) desc,
+                LENGTH(chaptername) desc
+                ;`, 
+            [mangaId]
+        );
+
+        // console.log(listChapterRows);
+        // console.log('length=', listChapterRows.length);
+        const index = listChapterRows.findIndex(chapter => chapter.ChapterID === chapterId);
+        // console.log('curr index=', index);
+        
+
+        const prev_index = (index + 1) >= listChapterRows.length ? null : (index + 1);
+        const next_index = (index - 1) < 0 ? null : (index - 1);
+        // console.log('Next index=', next_index);
+        // console.log('Prev index=', prev_index);
+
+        const prev_chapterid = prev_index === null ? prev_index : listChapterRows[prev_index].ChapterID;
+        const next_chapterid = next_index === null ? next_index : listChapterRows[next_index].ChapterID;
+        // console.log('Next ChapterID=', next_chapterid);
+        // console.log('Prev ChapterID=', prev_chapterid);
+
+        // Update +1 view for manga
         const [infoRow] = await db.query(`
             SELECT NumViews FROM manga WHERE MangaID = ?;
         `, [mangaId]);
@@ -225,8 +247,8 @@ module.exports.getChapter = async (chapterId) => {
             mangaId: mangaId,
             mangaName: chapterInfoRows[0].storyname,
             chapterName: chapterInfoRows[0].chaptername,
-            previousChapterId: chapterInfoRows[0].prev_chapterid,
-            nextChapterId: chapterInfoRows[0].next_chapterid,
+            previousChapterId: prev_chapterid,
+            nextChapterId: next_chapterid,
             chapter: chapterImageRows
         };
     } catch (err) {
