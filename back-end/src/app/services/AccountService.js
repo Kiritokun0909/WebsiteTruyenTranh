@@ -3,17 +3,25 @@ const saltRounds = 10;
 
 const SUCCESS = 1005;
 const FAILED = 1006;
+const LIKE = 1007;
+const NOT_LIKE = 1008;
 
 module.exports = { 
     SUCCESS_CODE: SUCCESS,
     FAILED_CODE: FAILED,
+    LIKE_CODE: LIKE,
+    NOT_LIKE_CODE: NOT_LIKE,
 };
 
 const db = require('../../configs/DatabaseConfig.js');
 
 module.exports.getUsername = async (accountId) => {
     try {
-        const [result] = await db.query(`SELECT username FROM account WHERE \`AccountID\` = ?;`, [accountId]);
+        const [result] = await db.query(`
+            SELECT username 
+            FROM account
+            WHERE \`AccountID\` = ?;
+        `, [accountId]);
 
         return { 
             code: SUCCESS, 
@@ -26,42 +34,39 @@ module.exports.getUsername = async (accountId) => {
     }
 }
 
-
 module.exports.updateUsername = async (accountId, newUsername) => {
     try {
-        const query = `
+        const [result] = await db.query(`
             UPDATE account
             SET
                 \`Username\` = ?
             WHERE \`AccountID\` = ?;
-        `;
-        const values = [newUsername, accountId];
-        const [result] = await db.query(query, values);
+        `, [newUsername, accountId]);
 
-        console.log(result);
-
-        return { code: SUCCESS, message: 'Update username successfully.' };
+        return { 
+            code: SUCCESS,
+            message: 'Update username successfully.'
+        };
     } catch (err) {
         console.error('Failed to update username successfully:', err);
         throw err;
     }
 }
 
-
 module.exports.changePassword = async (accountId, newPassword) => {
     try {
         const hashedPassword = await bcrypt.hash(newPassword, saltRounds);
-
-        const query = `
+        const [result] = await db.query(`
             UPDATE account
             SET
                 \`Password\` = ?
             WHERE \`AccountID\` = ?;
-        `;
-        const values = [hashedPassword, accountId];
-        const [result] = await db.query(query, values);
+        `, [hashedPassword, accountId]);
 
-        return { code: SUCCESS, message: 'Change password successfully.' };;
+        return { 
+            code: SUCCESS, 
+            message: 'Change password successfully.' 
+        };
     } catch (err) {
         console.error('Failed to change password:', err);
         throw err;
@@ -74,15 +79,20 @@ module.exports.isLike = async (accountId, mangaId) => {
         const [row] = await db.query(`
             SELECT AccountID
             FROM \`like\` 
-            WHERE 
-                AccountID = ? AND MangaID = ?;
+            WHERE AccountID = ? AND MangaID = ?;
         `, [accountId, mangaId]);
 
         if (row.length === 0) {
-            return { code: FAILED, message: 'AccountId=' + accountId + ' does not like MangaId='+ mangaId + '.' };
+            return { 
+                code: NOT_LIKE, 
+                message: 'AccountId=' + accountId + ' does not like MangaId='+ mangaId + '.' 
+            };
         }
 
-        return { code: SUCCESS, message: 'AccountId=' + accountId + ' likes MangaId='+ mangaId + '.' };
+        return { 
+            code: LIKE, 
+            message: 'AccountId=' + accountId + ' likes MangaId='+ mangaId + '.' 
+        };
 
     } catch (err) {
         console.error('Failed to query is like manga:', err);
@@ -95,15 +105,20 @@ module.exports.isFollow = async (accountId, mangaId) => {
         const [row] = await db.query(`
             SELECT AccountID
             FROM \`follow\` 
-            WHERE 
-                AccountID = ? AND MangaID = ?;
+            WHERE AccountID = ? AND MangaID = ?;
         `, [accountId, mangaId]);
 
         if (row.length === 0) {
-            return { code: FAILED, message: 'AccountId=' + accountId + ' does not follow MangaId='+ mangaId + '.' };
+            return { 
+                code: NOT_LIKE, 
+                message: 'AccountId=' + accountId + ' does not follow MangaId='+ mangaId + '.' 
+            };
         }
 
-        return { code: SUCCESS, message: 'AccountId=' + accountId + ' follows MangaId='+ mangaId + '.' };
+        return { 
+            code: LIKE, 
+            message: 'AccountId=' + accountId + ' follows MangaId='+ mangaId + '.' 
+        };
 
     } catch (err) {
         console.error('Failed to query is follow manga:', err);
@@ -114,10 +129,9 @@ module.exports.isFollow = async (accountId, mangaId) => {
 
 module.exports.likeManga = async (accountId, mangaId) => {
     try {
-        const query = `INSERT INTO \`like\` (AccountID, MangaID) VALUES (?, ?);`;
-
-        const values = [accountId, mangaId];
-        const [result] = await db.query(query, values);
+        const [result] = await db.query(`
+            INSERT INTO \`like\` (AccountID, MangaID) VALUES (?, ?);
+        `, [accountId, mangaId]);
 
         // Update +1 like for manga
         const [infoRow] = await db.query(`
@@ -125,23 +139,31 @@ module.exports.likeManga = async (accountId, mangaId) => {
         `, [mangaId]);
 
         const NumLikes = infoRow[0].NumLikes + 1;
-
-        const [updateManga] = await db.query(`
+        const [updateNumLikes] = await db.query(`
             UPDATE manga
             SET
                 \`NumLikes\` = ?
             WHERE MangaID = ?;
         `, [NumLikes, mangaId]);
 
-        return { code: SUCCESS, message: 'Like manga successfully.' };;
+        return { 
+            code: SUCCESS, 
+            message: 'Like manga successfully.' 
+        };;
 
     } catch (err) {
         if (err.code === 'ER_NO_REFERENCED_ROW_2') {
-            return { code: FAILED, message: 'MangaId=' + mangaId + ' not exists.' };
+            return { 
+                code: FAILED, 
+                message: 'MangaId=' + mangaId + ' not exists.' 
+            };
         }
 
         if (err.code === 'ER_DUP_ENTRY') {
-            return { code: FAILED, message: 'Already like this manga.' };
+            return { 
+                code: FAILED, 
+                message: 'Already like this manga.' 
+            };
         }
 
         console.error('Failed to like manga:', err);
@@ -151,10 +173,9 @@ module.exports.likeManga = async (accountId, mangaId) => {
 
 module.exports.unlikeManga = async (accountId, mangaId) => {
     try {
-        const query = `DELETE FROM \`like\` WHERE AccountID = ? AND MangaID = ?;`;
-
-        const values = [accountId, mangaId];
-        const [result] = await db.query(query, values);
+        const [result] = await db.query(`
+            DELETE FROM \`like\` WHERE AccountID = ? AND MangaID = ?;
+        `, [accountId, mangaId]);
 
         // Update -1 like for manga
         const [infoRow] = await db.query(`
@@ -164,14 +185,17 @@ module.exports.unlikeManga = async (accountId, mangaId) => {
         var NumLikes = (infoRow[0].NumLikes - 1);
         NumLikes = NumLikes > 0 ? NumLikes : 0;
 
-        const [updateManga] = await db.query(`
+        const [updateNumLikes] = await db.query(`
             UPDATE manga
             SET
                 \`NumLikes\` = ?
             WHERE MangaID = ?;
         `, [NumLikes, mangaId]);
 
-        return { code: SUCCESS, message: 'Unlike manga successfully.' };;
+        return { 
+            code: SUCCESS, 
+            message: 'Unlike manga successfully.' 
+        };
 
     } catch (err) {
         console.error('Failed to unlike manga:', err);
@@ -182,10 +206,9 @@ module.exports.unlikeManga = async (accountId, mangaId) => {
 
 module.exports.followManga = async (accountId, mangaId) => {
     try {
-        const query = `INSERT INTO \`follow\` (AccountID, MangaID) VALUES (?, ?);`;
-
-        const values = [accountId, mangaId];
-        const [result] = await db.query(query, values);
+        const [result] = await db.query(`
+            INSERT INTO \`follow\` (AccountID, MangaID) VALUES (?, ?);
+        `, [accountId, mangaId]);
 
         // Update +1 follow for manga
         const [infoRow] = await db.query(`
@@ -193,23 +216,31 @@ module.exports.followManga = async (accountId, mangaId) => {
         `, [mangaId]);
 
         const NumFollows = infoRow[0].NumFollows + 1;
-
-        const [updateManga] = await db.query(`
+        const [updateNumFollows] = await db.query(`
             UPDATE manga
             SET
                 \`NumFollows\` = ?
             WHERE MangaID = ?;
         `, [NumFollows, mangaId]);
 
-        return { code: SUCCESS, message: 'Follow manga successfully.' };;
+        return { 
+            code: SUCCESS, 
+            message: 'Follow manga successfully.' 
+        };
 
     } catch (err) {
         if (err.code === 'ER_NO_REFERENCED_ROW_2') {
-            return { code: FAILED, message: 'MangaId=' + mangaId + ' not exists.' };
+            return { 
+                code: FAILED, 
+                message: 'MangaId=' + mangaId + ' not exists.' 
+            };
         }
 
         if (err.code === 'ER_DUP_ENTRY') {
-            return { code: FAILED, message: 'Already follow this manga.' };
+            return { 
+                code: FAILED, 
+                message: 'Already follow this manga.' 
+            };
         }
 
         console.error('Failed to follow manga:', err);
@@ -219,10 +250,9 @@ module.exports.followManga = async (accountId, mangaId) => {
 
 module.exports.unfollowManga = async (accountId, mangaId) => {
     try {
-        const query = `DELETE FROM \`follow\` WHERE AccountID = ? AND MangaID = ?;`;
-
-        const values = [accountId, mangaId];
-        const [result] = await db.query(query, values);
+        const [result] = await db.query(`
+            DELETE FROM \`follow\` WHERE AccountID = ? AND MangaID = ?;
+        `, [accountId, mangaId]);
 
         // Update -1 follow for manga
         const [infoRow] = await db.query(`
@@ -231,18 +261,20 @@ module.exports.unfollowManga = async (accountId, mangaId) => {
 
         var NumFollows = (infoRow[0].NumFollows - 1);
         NumFollows = NumFollows > 0 ? NumFollows : 0;
-
-        const [updateManga] = await db.query(`
+        const [updateNumFollows] = await db.query(`
             UPDATE manga
             SET
                 \`NumFollows\` = ?
             WHERE MangaID = ?;
         `, [NumFollows, mangaId]);
 
-        return { code: SUCCESS, message: 'Unlike manga successfully.' };;
+        return { 
+            code: SUCCESS, 
+            message: 'Unfollow manga successfully.' 
+        };
 
     } catch (err) {
-        console.error('Failed to unlike manga:', err);
+        console.error('Failed to unfollow manga:', err);
         throw err;
     }
 }
@@ -250,7 +282,11 @@ module.exports.unfollowManga = async (accountId, mangaId) => {
 
 module.exports.getListLike = async (accountId, pageNumber = 1, itemsPerPage = 5) => {
     try {
-        const [totalRows] = await db.query('SELECT COUNT(MangaID) as total FROM \`like\` WHERE AccountID = ?', [accountId]);
+        const [totalRows] = await db.query(`
+            SELECT COUNT(MangaID) as total 
+            FROM \`like\` 
+            WHERE AccountID = ?
+        `, [accountId]);
         
         const totalMangas = totalRows[0].total;
 
@@ -264,16 +300,15 @@ module.exports.getListLike = async (accountId, pageNumber = 1, itemsPerPage = 5)
         }
 
         const offset = (pageNumber - 1) * itemsPerPage;
-        const [rows] = await db.query(
-            `SELECT m.MangaID, m.CoverImageUrl, m.StoryName, m.NumChapter
+        const [rows] = await db.query(`
+            SELECT m.mangaId, m.coverImageUrl, m.mangaName, m.newChapterName
             FROM 
 	            \`like\` li
                 JOIN manga m ON li.MangaId = m.MangaID
             WHERE 
 	            li.AccountID = ?
-            LIMIT ? OFFSET ?`,
-            [accountId, itemsPerPage, offset]
-        );
+            LIMIT ? OFFSET ?
+        `, [accountId, itemsPerPage, offset]);
 
         return {
             pageNumber,
@@ -288,10 +323,12 @@ module.exports.getListLike = async (accountId, pageNumber = 1, itemsPerPage = 5)
 
 module.exports.getListFollow = async (accountId, pageNumber = 1, itemsPerPage = 5) => {
     try {
-        const [totalRows] = await db.query('SELECT COUNT(MangaID) as total FROM \`follow\` WHERE AccountID = ?', [accountId]);
+        const [totalRows] = await db.query(`
+            SELECT COUNT(MangaID) as total 
+            FROM \`follow\` WHERE AccountID = ?
+        `, [accountId]);
         
         const totalMangas = totalRows[0].total;
-
         const totalPages = Math.ceil(totalMangas / itemsPerPage);
         if (pageNumber > totalPages) {
             return { 
@@ -302,8 +339,8 @@ module.exports.getListFollow = async (accountId, pageNumber = 1, itemsPerPage = 
         }
 
         const offset = (pageNumber - 1) * itemsPerPage;
-        const [rows] = await db.query(
-            `SELECT m.MangaID, m.CoverImageUrl, m.StoryName, m.NumChapter
+        const [rows] = await db.query(`
+            SELECT m.mangaId, m.coverImageUrl, m.mangaName, m.newChapterName
             FROM 
 	            \`follow\` li
                 JOIN manga m ON li.MangaId = m.MangaID
@@ -327,21 +364,24 @@ module.exports.getListFollow = async (accountId, pageNumber = 1, itemsPerPage = 
 
 module.exports.commentManga = async (accountId, mangaId, context) => {
     try {
-        const query = `
-        INSERT INTO commentmanga 
-            (\`AccountID\`, \`MangaID\`, \`Context\`) 
-        VALUES 
-            (?, ?, ?);
-        `;
+        const [result] = await db.query(`
+            INSERT INTO commentmanga 
+                (\`AccountID\`, \`MangaID\`, \`Context\`) 
+            VALUES 
+                (?, ?, ?);
+        `, [accountId, mangaId, context]);
 
-        const values = [accountId, mangaId, context];
-        const [result] = await db.query(query, values);
-
-        return { code: SUCCESS, message: 'Comment manga successfully.' };;
+        return { 
+            code: SUCCESS, 
+            message: 'Comment manga successfully.' 
+        };
 
     } catch (err) {
         if (err.code === 'ER_NO_REFERENCED_ROW_2') {
-            return { code: FAILED, message: 'MangaId=' + mangaId + ' not exists.' };
+            return { 
+                code: FAILED, 
+                message: 'MangaId=' + mangaId + ' not exists.' 
+            };
         }
 
         console.error('Failed to comment manga:', err);
@@ -351,21 +391,24 @@ module.exports.commentManga = async (accountId, mangaId, context) => {
 
 module.exports.commentChapter = async (accountId, chapterId, context) => {
     try {
-        const query = `
-        INSERT INTO commentchapter 
-            (\`AccountID\`, \`ChapterID\`, \`Context\`) 
-        VALUES 
-            (?, ?, ?);
-        `;
+        const [result] = await db.query(`
+            INSERT INTO commentchapter 
+                (\`AccountID\`, \`ChapterID\`, \`Context\`) 
+            VALUES 
+                (?, ?, ?);
+        `, [accountId, chapterId, context]);
 
-        const values = [accountId, chapterId, context];
-        const [result] = await db.query(query, values);
-
-        return { code: SUCCESS, message: 'Comment chapter successfully.' };;
+        return { 
+            code: SUCCESS, 
+            message: 'Comment chapter successfully.' 
+        };
 
     } catch (err) {
         if (err.code === 'ER_NO_REFERENCED_ROW_2') {
-            return { code: FAILED, message: 'ChapterId=' + chapterId + ' not exists.' };
+            return { 
+                code: FAILED, 
+                message: 'ChapterId=' + chapterId + ' not exists.' 
+            };
         }
 
         console.error('Failed to comment chapter:', err);

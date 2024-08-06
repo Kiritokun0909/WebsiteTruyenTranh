@@ -12,7 +12,7 @@ class SiteController {
     // [GET] /genres
     async getListGenre(req, res){
         const result = await siteService.getListGenre();
-        res.json(result);
+        res.status(200).json(result);
     }
 
     // [GET] /genre/{genreId}
@@ -20,7 +20,7 @@ class SiteController {
         const genreId = parseInt(req.params.genreId, 10);
 
         if (isNaN(genreId) || genreId < 1) {
-            res.status(HTTP_STATUS.BAD_REQUEST).json({ error: 'Invalid GenreId' });
+            res.status(400).json({ error: 'Invalid GenreId' });
             return;
         }
 
@@ -32,10 +32,11 @@ class SiteController {
                 return;
             }
 
-            res.json(result);
+            res.status(200).json(result);
             return;
-        } catch (err) { }
-        res.status(HTTP_STATUS.NOT_FOUND).json({ error: 'Failed to get genre.' });
+        } catch (err) {
+            res.status(500).json({ error: 'Failed to get genre.' });
+        }
     }
 
     // [GET] /mangas/pageNumber={pageNumber}
@@ -43,16 +44,17 @@ class SiteController {
         const currentPage = parseInt(req.params.pageNumber, 10) || 1;
         
         if (isNaN(currentPage) || currentPage < 1) {
-            res.status(HTTP_STATUS.BAD_REQUEST).json({ error: 'Invalid PageNumber' });
+            res.status(400).json({ error: 'Invalid PageNumber' });
             return;
         }
 
         try {
             const result = await siteService.getListManga(currentPage, HANDLE_CODE.NUM_OF_ITEM_PER_PAGE);
-            res.json(result);
+            res.status(200).json(result);
             return;
-        } catch (err) { }
-        res.status(HTTP_STATUS.INTERNAL_SERVER_ERROR).json({ error: 'Failed to get list manga' });
+        } catch (err) { 
+            res.status(500).json({ error: 'Failed to get list manga' });
+        }
     }
 
     // [GET] /mangas/genreId={genreId}&pageNumber={pageNumber}
@@ -61,21 +63,22 @@ class SiteController {
         const currentPage = parseInt(req.params.pageNumber, 10);
 
         if (isNaN(genreId) || genreId < 1) {
-            res.status(HTTP_STATUS.BAD_REQUEST).json({ error: 'Invalid GenreId' });
+            res.status(400).json({ error: 'Invalid GenreId' });
             return;
         }
 
         if (isNaN(currentPage) || currentPage < 1) {
-            res.status(HTTP_STATUS.BAD_REQUEST).json({ error: 'Invalid PageNumber' });
+            res.status(400).json({ error: 'Invalid PageNumber' });
             return;
         }
 
         try {
             const result = await siteService.getListMangaByGenre(genreId, currentPage, HANDLE_CODE.NUM_OF_ITEM_PER_PAGE);
-            res.json(result);
+            res.status(200).json(result);
             return;
-        } catch (err) { }
-        res.status(HTTP_STATUS.INTERNAL_SERVER_ERROR).json({ error: 'Failed to get list manga by genre' });
+        } catch (err) { 
+            res.status(500).json({ error: 'Failed to get list manga by genre' });
+        }
     }
 
     // [GET] /mangas/keyword={keyword}&pageNumber={pageNumber}
@@ -84,16 +87,17 @@ class SiteController {
         const currentPage = parseInt(req.params.pageNumber, 10) || 1;
         
         if (isNaN(currentPage) || currentPage < 1) {
-            res.status(HTTP_STATUS.BAD_REQUEST).json({ error: 'Invalid PageNumber' });
+            res.status(400).json({ error: 'Invalid PageNumber' });
             return;
         }
 
         try {
             const result = await siteService.getListMangaByKeyword(keyword, currentPage, HANDLE_CODE.NUM_OF_ITEM_PER_PAGE);
-            res.json(result);
+            res.status(200).json(result);
             return;
-        } catch (err) { }
-        res.status(HTTP_STATUS.INTERNAL_SERVER_ERROR).json({ error: 'Failed to get list manga' });
+        } catch (err) { 
+            res.status(500).json({ error: 'Failed to get list manga' });
+        }
     }
 
     // [GET] /manga/{mangaId}
@@ -101,7 +105,7 @@ class SiteController {
         let mangaId = parseInt(req.params.mangaId, 10);
 
         if (isNaN(mangaId) || mangaId < 1) {
-            res.status(HTTP_STATUS.BAD_REQUEST).json({ error: 'Invalid MangaId' });
+            res.status(400).json({ error: 'Invalid MangaId' });
             return;
         }
 
@@ -114,11 +118,12 @@ class SiteController {
             }
 
             if(result.manga.length > 0 ){
-                res.json(result);
+                res.status(200).json(result);
                 return;
             }
-        } catch (err) { }
-        res.status(HTTP_STATUS.NOT_FOUND).json({ error: 'Failed to get manga.' });
+        } catch (err) {
+            res.status(500).json({ error: 'Failed to get manga.' });
+        }
     }
 
     // [GET] /chapter/{chapterId}
@@ -126,7 +131,7 @@ class SiteController {
         const chapterId = parseInt(req.params.chapterId, 10);
 
         if (isNaN(chapterId) || chapterId < 1) {
-            res.status(HTTP_STATUS.BAD_REQUEST).json({ error: 'Invalid ChapterId' });
+            res.status(400).json({ error: 'Invalid ChapterId' });
             return;
         }
 
@@ -138,10 +143,11 @@ class SiteController {
                 return;
             }
 
-            res.json(result);
+            res.status(200).json(result);
             return;
-        } catch (err) { }
-        res.status(HTTP_STATUS.NOT_FOUND).json({ error: 'Failed to get chapter.' });
+        } catch (err) { 
+            res.status(500).json({ error: 'Failed to get chapter.' });
+        }
     }
 
     // [GET] /manga/{mangaId}/comment/{pageNumber}
@@ -163,8 +169,9 @@ class SiteController {
             const result = await siteService.getMangaComment(mangaId, pageNumber, HANDLE_CODE.NUM_OF_COMMENT_PER_PAGE);
             res.status(200).json(result);
             return;
-        } catch (err) { }
-        res.status(404).json({ error: 'Failed to get manga comments.' });
+        } catch (err) { 
+            res.status(500).json({ error: 'Failed to get manga comments.' });
+        }
     }
 
     // [GET] /manga/{chapterId}/comment/{pageNumber}
@@ -186,8 +193,9 @@ class SiteController {
             const result = await siteService.getChapterComment(chapterId, pageNumber, HANDLE_CODE.NUM_OF_COMMENT_PER_PAGE);
             res.status(200).json(result);
             return;
-        } catch (err) { }
-        res.status(404).json({ error: 'Failed to get manga comments.' });
+        } catch (err) { 
+            res.status(500).json({ error: 'Failed to get chapter comments.' });
+        }
     }
 
 }

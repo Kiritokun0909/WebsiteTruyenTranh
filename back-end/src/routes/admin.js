@@ -22,8 +22,6 @@ router.put('/update-manga'
             
 router.delete('/remove-chapter/:chapterId', controller.removeChapter);
 
-router.put('/hide-manga/:mangaId', controller.hideManga);
-router.put('/unhide-manga/:mangaId', controller.unhideManga);
 
 router.post('/upload-chapter/:mangaId'
             , upload.array('chapterImages')

@@ -14,7 +14,7 @@ class AccountController {
             }
 
         } catch (err) {
-            console.log(err);
+            // console.log(err);
             res.status(500).json({ message: 'Failed to get username.' });
         }
     }
@@ -32,7 +32,7 @@ class AccountController {
             }
 
         } catch (err) {
-            console.log(err);
+            // console.log(err);
             res.status(500).json({ message: 'Failed to update username.' });
         }
     }
@@ -51,7 +51,7 @@ class AccountController {
             }
 
         } catch (err) {
-            console.log(err);
+            // console.log(err);
             res.status(500).json({ message: 'Failed to update password.' });
         }
     }
@@ -69,18 +69,18 @@ class AccountController {
         try {
             const result = await accountService.isLike(accountId, mangaId);
 
-            if(result && result.code == accountService.FAILED_CODE) {
-                res.status(400).json({ message: result.message });
+            if(result && result.code == accountService.NOT_LIKE_CODE) {
+                res.status(200).json({ code: accountService.NOT_LIKE_CODE, message: result.message });
                 return;
             }
             
-            if(result && result.code == accountService.SUCCESS_CODE) {
-                res.status(200).json({ message: result.message });
+            if(result && result.code == accountService.LIKE_CODE) {
+                res.status(200).json({ code: accountService.LIKE_CODE, message: result.message });
                 return;
             }
 
         } catch (err) {
-            console.log(err);
+            // console.log(err);
             res.status(500).json({ message: 'Failed to get is like manga.' });
         }
     }
@@ -98,19 +98,19 @@ class AccountController {
         try {
             const result = await accountService.isFollow(accountId, mangaId);
 
-            if(result && result.code == accountService.FAILED_CODE) {
-                res.status(400).json({ message: result.message });
+            if(result && result.code == accountService.NOT_LIKE_CODE) {
+                res.status(200).json({ code: accountService.NOT_LIKE_CODE, message: result.message });
                 return;
             }
             
-            if(result && result.code == accountService.SUCCESS_CODE) {
-                res.status(200).json({ message: result.message });
+            if(result && result.code == accountService.LIKE_CODE) {
+                res.status(200).json({ code: accountService.LIKE_CODE, message: result.message });
                 return;
             }
 
         } catch (err) {
-            console.log(err);
-            res.status(500).json({ message: 'Failed to get is like manga.' });
+            // console.log(err);
+            res.status(500).json({ message: 'Failed to get is follow manga.' });
         }
     }
 
@@ -138,7 +138,7 @@ class AccountController {
             }
 
         } catch (err) {
-            console.log(err);
+            // console.log(err);
             res.status(500).json({ message: 'Failed to like manga.' });
         }
     }
@@ -168,7 +168,7 @@ class AccountController {
             }
 
         } catch (err) {
-            console.log(err);
+            // console.log(err);
             res.status(500).json({ message: 'Failed to follow manga.' });
         }
     }
@@ -193,8 +193,8 @@ class AccountController {
             }
 
         } catch (err) {
-            console.log(err);
-            res.status(500).json({ message: 'Failed to like manga.' });
+            // console.log(err);
+            res.status(500).json({ message: 'Failed to unlike manga.' });
         }
     }
 
@@ -218,8 +218,8 @@ class AccountController {
             }
 
         } catch (err) {
-            console.log(err);
-            res.status(500).json({ message: 'Failed to like manga.' });
+            // console.log(err);
+            res.status(500).json({ message: 'Failed to unfollow manga.' });
         }
     }
 
@@ -238,8 +238,10 @@ class AccountController {
             const result = await accountService.getListLike(accountId, currentPage, HANDLE_CODE.NUM_OF_ITEM_PER_PAGE);
             res.json(result);
             return;
-        } catch (err) { }
-        res.status(500).json({ error: 'Failed to get like list' });
+        } catch (err) {
+            res.status(500).json({ error: 'Failed to get like list' });
+        }
+        
     }
     
 
@@ -257,8 +259,9 @@ class AccountController {
             const result = await accountService.getListFollow(accountId, currentPage, HANDLE_CODE.NUM_OF_ITEM_PER_PAGE);
             res.json(result);
             return;
-        } catch (err) { }
-        res.status(500).json({ error: 'Failed to get like list' });
+        } catch (err) {
+            res.status(500).json({ error: 'Failed to get follow list' });
+        }
     }
 
 
@@ -290,7 +293,6 @@ class AccountController {
             console.log(err);
             res.status(500).json({ error: 'Failed to comment manga' });
         }
-        
     }
 
 
@@ -322,7 +324,6 @@ class AccountController {
             console.log(err);
             res.status(500).json({ error: 'Failed to comment chapter' });
         }
-        
     }
 
     

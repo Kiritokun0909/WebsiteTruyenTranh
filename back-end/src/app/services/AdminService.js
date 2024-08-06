@@ -13,7 +13,7 @@ module.exports.addManga = async (mangaName, authorName, coverImageUrl, descripti
     try {
         const [insertRow] = await db.query(`
             INSERT INTO manga(
-                \`StoryName\`,
+                \`MangaName\`,
                 \`AuthorName\`,
                 \`CoverImageUrl\`,
                 \`Description\`,
@@ -43,14 +43,14 @@ module.exports.updateManga = async (mangaId, mangaName, authorName, coverImageUr
     try {
         let query = `
             UPDATE manga
-            SET StoryName = ?, AuthorName = ?, Description = ?, AgeLimit = ?
+            SET MangaName = ?, AuthorName = ?, Description = ?, AgeLimit = ?
         `;
         let params = [mangaName, authorName, description, ageLimit, mangaId];
 
         if (coverImageUrl != '') {
             query = `
                 UPDATE manga
-                SET StoryName = ?, AuthorName = ?, CoverImageUrl = ?, Description = ?, AgeLimit = ?
+                SET MangaName = ?, AuthorName = ?, CoverImageUrl = ?, Description = ?, AgeLimit = ?
             `;
             params = [mangaName, authorName, coverImageUrl, description, ageLimit, mangaId];
         }
@@ -77,26 +77,6 @@ module.exports.updateManga = async (mangaId, mangaName, authorName, coverImageUr
     }
 }
 
-
-module.exports.setMangaHideStatus = async (mangaId, isHide = false) => {
-    try {
-        const query = `
-            UPDATE manga
-            SET
-                \`IsBlocked\` = ?
-            WHERE MangaID = ?;
-        `;
-        const hideStatus = isHide ? 1 : 0;
-        const values = [hideStatus, mangaId];
-        const [result] = await db.query(query, values);
-
-        return { code: SUCCESS, message: 'Update manga hide status successfully.' };;
-    } catch (err) {
-        console.error('Failed to update manga hide status manga:', err);
-        throw err;
-    }
-}
-
 module.exports.addChapter = async (chapterName, mangaId) => {
     try {
         const [insertRow] = await db.query(`
@@ -107,17 +87,15 @@ module.exports.addChapter = async (chapterName, mangaId) => {
         `, [chapterName, mangaId]);
 
         const chapterId = insertRow.insertId;
-
         const [infoRow] = await db.query(`
             SELECT publishedDate FROM chapter WHERE ChapterID = ?;
         `, [chapterId]);
 
         const updateDate = infoRow[0].publishedDate;
-
         const [updateManga] = await db.query(`
             UPDATE manga
             SET
-                \`NumChapter\` = ?,
+                \`NewChapterName\` = ?,
                 \`UpdateDate\` = ?
             WHERE MangaID = ?;
         `, [chapterName, updateDate, mangaId]);
@@ -136,15 +114,13 @@ module.exports.addChapter = async (chapterName, mangaId) => {
 module.exports.addChapterImages = async (chapterImages, chapterId) => {
     try {
         for (let i = 0; i < chapterImages.length; i++) {
-            const query = `
+            const [result] = await db.query(`
                 INSERT INTO chapterimage(
                     \`ChapterID\`,
                     \`OrderNumber\`,
                     \`ImageUrl\`
                 ) VALUES(?, ?, ?);
-            `;
-            const values = [chapterId, chapterImages[i].orderNumber, chapterImages[i].imageUrl];
-            const [result] = await db.query(query, values);
+            `, [chapterId, chapterImages[i].orderNumber, chapterImages[i].imageUrl]);
         }
 
         return { code: SUCCESS, message: 'Add list chapter image successfully.' };
