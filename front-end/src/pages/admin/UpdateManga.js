@@ -25,13 +25,13 @@ const UpdateMangaPage = () => {
         const manga = data.manga[0];
         const listGenre = data.genres;
 
-        setMangaName(manga.StoryName);
-        setAuthor(manga.AuthorName);
-        setAgeLimit(manga.AgeLimit);
-        setDescription(manga.Description);
-        setPreviewCoverImage(manga.CoverImageUrl);
+        setMangaName(manga.mangaName);
+        setAuthor(manga.authorName);
+        setAgeLimit(manga.ageLimit);
+        setDescription(manga.description);
+        setPreviewCoverImage(manga.coverImageUrl);
 
-        const ids = listGenre.map((genre) => String(genre.GenreID));
+        const ids = listGenre.map((genre) => String(genre.genreId));
         setSelectedGenres(ids);
       } catch (error) {
         console.error("Error getting manga:", error);
@@ -162,7 +162,7 @@ const UpdateMangaPage = () => {
             />
           </div>
 
-          <div class="upload-genres">
+          <div className="upload-genres">
             <label>Thể loại:</label>
             <div className="genres-list">
               {genres.map((genre) => (

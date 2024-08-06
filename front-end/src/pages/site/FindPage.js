@@ -50,22 +50,22 @@ const FindPage = () => {
 
       <div className="manga-list">
         {mangas.map((manga) => (
-          <div key={manga.MangaID} className="manga-item">
-            <Link to={`/manga/${manga.MangaID}`}>
+          <div key={manga.mangaId} className="manga-item">
+            <Link to={`/manga/${manga.mangaId}`}>
               <img
-                src={manga.CoverImageUrl}
-                alt={manga.StoryName}
+                src={manga.coverImageUrl}
+                alt={manga.mangaName}
                 className="manga-cover"
               />
             </Link>
             <nav id="manga-name">
-              <NavLink to={`/manga/${manga.MangaID}`} title={manga.StoryName}>
-                {manga.StoryName}
+              <NavLink to={`/manga/${manga.mangaId}`} title={manga.mangaName}>
+                {manga.mangaName}
               </NavLink>
             </nav>
             <nav id="chapter">
-              <NavLink to={`/manga/${manga.MangaID}/${manga.NumChapter}`}>
-                {manga.NumChapter}
+              <NavLink to={`/manga/${manga.mangaId}`}>
+                {manga.newChapterName}
               </NavLink>
             </nav>
           </div>

@@ -92,9 +92,6 @@ const Chapter = () => {
     }
   };
 
-
- 
-
   return (
     <div className="chapter-layout">
       <div className="chapter-info">
@@ -132,8 +129,8 @@ const Chapter = () => {
 
       <div className="chapter-images">
         {chapter.map((images) => (
-          <div key={images.OrderNumber} className="chapter-image">
-            <img src={images.ImageUrl} alt="images" className="chapter-image" />
+          <div key={images.orderNumber} className="chapter-image">
+            <img src={images.imageUrl} alt="images" className="chapter-image" />
           </div>
         ))}
       </div>

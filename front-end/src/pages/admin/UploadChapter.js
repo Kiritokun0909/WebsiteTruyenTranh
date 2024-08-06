@@ -24,7 +24,7 @@ const UploadChapterPage = () => {
         setManga(data.manga);
 
         if (data.chapters.length !== 0) {
-          setLatestChapterName(data.chapters[0].ChapterName);
+          setLatestChapterName(data.chapters[0].chapterName);
         }
       } catch (error) {
         console.error("Error getting manga:", error);
@@ -55,7 +55,7 @@ const UploadChapterPage = () => {
 
       if (response.code === 201) {
         alert("Thêm chương mới thành công.");
-        navigate("/");
+        navigate("/manga/" + mangaId);
       } else {
         alert("Đã có lỗi xảy ra vui lòng thử lại sau.");
       }
@@ -73,32 +73,32 @@ const UploadChapterPage = () => {
       <form onSubmit={handleSubmit} encType="multipart/form-data">
         <div>
           {manga.map((mangaItem) => (
-            <div key={mangaItem.MangaId} className="manga-info">
+            <div key={mangaItem.mangaId} className="manga-info">
               <div className="manga-cover">
                 <img
-                  src={mangaItem.CoverImageUrl}
-                  alt={mangaItem.StoryName}
+                  src={mangaItem.coverImageUrl}
+                  alt={mangaItem.mangaName}
                   className="manga-cover"
                 />
               </div>
 
               <div className="manga-info-detail">
-                <h4>{mangaItem.StoryName}</h4>
+                <h4>{mangaItem.mangaName}</h4>
                 <div className="list-info">
                   <p>
-                    <strong>Tác giả:</strong> {mangaItem.AuthorName}
+                    <strong>Tác giả:</strong> {mangaItem.authorName}
                   </p>
                   <p>
-                    <strong>Độ tuổi:</strong> {mangaItem.AgeLimit}+
+                    <strong>Độ tuổi:</strong> {mangaItem.ageLimit}+
                   </p>
                   <p>
-                    <strong>Lượt xem:</strong> {mangaItem.NumViews}
+                    <strong>Lượt xem:</strong> {mangaItem.numViews}
                   </p>
                   <p>
-                    <strong>Lượt theo dõi:</strong> {mangaItem.NumFollows}
+                    <strong>Lượt theo dõi:</strong> {mangaItem.numFollows}
                   </p>
                   <p>
-                    <strong>Lượt yêu thích:</strong> {mangaItem.NumLikes}
+                    <strong>Lượt yêu thích:</strong> {mangaItem.numLikes}
                   </p>
                   <p>
                     <strong>Chương mới nhất:</strong> {latestChapterName}
