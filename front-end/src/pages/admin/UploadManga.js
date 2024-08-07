@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import "../../styles/admin/UploadManga.css";
+import "../../styles/Loading.css";
 import { uploadManga } from "../../api/AdminService.js";
 import { fetchGenres } from "../../api/SiteService";
 
@@ -13,6 +14,8 @@ const UploadMangaPage = () => {
   const [previewCoverImage, setPreviewCoverImage] = useState(null);
   const [genres, setGenres] = useState([]);
   const [selectedGenres, setSelectedGenres] = useState([]);
+
+  const [isLoading, setIsLoading] = useState(false);
 
   const navigate = useNavigate();
 
@@ -44,6 +47,7 @@ const UploadMangaPage = () => {
       return;
     }
 
+    setIsLoading(true);
     const response = await uploadManga(
       coverImage,
       mangaName,
@@ -52,6 +56,7 @@ const UploadMangaPage = () => {
       description,
       selectedGenres
     );
+    setIsLoading(false);
 
     if (response.code === 201) {
       alert("Thêm manga mới thành công.");
@@ -76,6 +81,12 @@ const UploadMangaPage = () => {
 
   return (
     <div className="upload-manga-layout">
+      {isLoading && (
+        <div className="overlay">
+          <div className="loader"></div>
+        </div>
+      )}
+
       <div className="home-header">
         <h3>Đăng truyện mới</h3>
       </div>

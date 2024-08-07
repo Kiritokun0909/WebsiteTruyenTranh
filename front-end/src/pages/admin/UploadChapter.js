@@ -1,12 +1,14 @@
 import React, { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import "../../styles/admin/UploadManga.css";
+import "../../styles/Loading.css";
 import { uploadChapter } from "../../api/AdminService.js";
 import { fetchManga } from "../../api/SiteService.js";
 
 const UploadChapterPage = () => {
   const { mangaId } = useParams();
   const [manga, setManga] = useState([]);
+  const [isLoading, setIsLoading] = useState(false);
 
   const [latestChapterName, setLatestChapterName] = useState(
     "Không có chương nào"
@@ -51,7 +53,10 @@ const UploadChapterPage = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
+
+      setIsLoading(true);
       const response = await uploadChapter(mangaId, chapterName, images);
+      setIsLoading(false);
 
       if (response.code === 201) {
         alert("Thêm chương mới thành công.");
@@ -70,6 +75,12 @@ const UploadChapterPage = () => {
 
   return (
     <div className="upload-manga-layout">
+      {isLoading && (
+        <div className="overlay">
+          <div className="loader"></div>
+        </div>
+      )}
+
       <form onSubmit={handleSubmit} encType="multipart/form-data">
         <div>
           {manga.map((mangaItem) => (

@@ -1,11 +1,13 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import "../../styles/admin/UploadManga.css";
+import "../../styles/Loading.css";
 import { fetchGenres, fetchManga } from "../../api/SiteService";
 import { updateManga } from "../../api/AdminService";
 
 const UpdateMangaPage = () => {
   const { mangaId } = useParams();
+  const [isLoading, setIsLoading] = useState(false);
 
   const [mangaName, setMangaName] = useState("");
   const [author, setAuthor] = useState("");
@@ -64,6 +66,8 @@ const UpdateMangaPage = () => {
     const uniqueIds = [...new Set(selectedGenres.map((id) => String(id)))];
     setSelectedGenres(uniqueIds);
 
+    setIsLoading(true);
+
     // console.log('submit selected genres: ', selectedGenres);
     const response = await updateManga(
       mangaId,
@@ -74,6 +78,8 @@ const UpdateMangaPage = () => {
       description,
       selectedGenres
     );
+
+    setIsLoading(false);
 
     if (response.code === 200) {
       alert("Cập nhật manga thành công.");
@@ -99,6 +105,12 @@ const UpdateMangaPage = () => {
 
   return (
     <div className="upload-manga-layout">
+      {isLoading && (
+        <div className="overlay">
+          <div className="loader"></div>
+        </div>
+      )}
+
       <div className="home-header">
         <h3>Cập nhật thông tin truyện</h3>
       </div>
