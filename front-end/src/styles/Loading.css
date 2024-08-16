@@ -12,7 +12,7 @@
 }
 
 .loader:before {
-  content: "Đang tải...";
+  content: "Đang xử lý...";
 }
 
 @keyframes l6 {

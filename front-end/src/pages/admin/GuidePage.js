@@ -4,7 +4,7 @@ const GuidePage = () => {
   return (
     <div>
       <div className="home-header">
-        <h3>Hướng dẫn đăng hoặc xoá truyện/chương</h3>
+        <h3>Hướng dẫn quản lý truyện/chương</h3>
       </div>
       <div>
         <h4>Hướng dẫn đăng truyện mới</h4>
